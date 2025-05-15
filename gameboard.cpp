@@ -10,15 +10,22 @@ GameBoard::GameBoard(QWidget *parent)
     //always keep the grid visible
     setFixedSize(cols * cellSize + 20, rows * cellSize + 20);
 
-    //generate firt tetromino
+    //generate first tetromino
     actuel = new tetromino;
     actuel->pos = QPoint(0,4);
     generateTetromino();
 
+    //initialise an empty grid
+    for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+            grid[i][j]= QColor();
+        }
+    }
+
     //move the tetromino
     QTimer *myTimer = new QTimer(this);
     connect(myTimer, &QTimer::timeout, this, &GameBoard::moveDown);
-    myTimer->start(500);
+    myTimer->start(200);
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
@@ -60,6 +67,16 @@ void GameBoard::paintEvent(QPaintEvent *) {
             drawBlock(painter,x,y,cellSize,actuel->color);
         }
     }
+
+    for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+            if(grid[i][j].isValid()){
+                int x = j*cellSize+offSetX;
+                int y = i*cellSize+offSetY;
+                drawBlock(painter,x,y,cellSize,grid[i][j]);
+            }
+        }
+    }
 }
 
 void GameBoard::generateTetromino(){
@@ -99,6 +116,26 @@ void GameBoard::generateTetromino(){
 }
 
 void GameBoard::moveDown(){
-    actuel->pos.setX(actuel->pos.x()+1); //move down the referent point of the tetromino of 1 block
+    int newPosX = actuel->pos.x()+1;
+    bool collision = false;
+    //detect collision
+    for(int i=0;i<4;i++){
+        int x = newPosX+actuel->forme[i].x();
+        int y = actuel->pos.y()+actuel->forme[i].y();
+        if((x>rows-1)||grid[x][y].isValid())
+        {
+            collision = true;
+            break;
+        }
+    }
+    if(collision){
+        for(int i=0;i<4;i++){
+            int x = actuel->pos.x()+actuel->forme[i].x();
+            int y = actuel->pos.y()+actuel->forme[i].y();
+            grid[x][y] = actuel->color;
+        }
+        generateTetromino();
+    }else
+        actuel->pos.setX(newPosX); //move down the referent point of the tetromino of 1 block
     update();//update the image
 }

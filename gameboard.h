@@ -43,6 +43,7 @@ private:
     static const int offSetX = 10;
     static const int offSetY = 10;
     tetromino* actuel = nullptr;
+    QColor grid[rows][cols];
 signals:
 };
 
