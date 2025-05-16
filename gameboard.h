@@ -29,12 +29,14 @@ class GameBoard : public QWidget
 public:
     explicit GameBoard(QWidget *parent = nullptr);
     ~GameBoard(){delete actuel;}
-    void moveDown();
     void drawBlock(QPainter &painter, int x, int y, int size, QColor color) ;
-
-protected:
     void paintEvent(QPaintEvent *) override;
     void generateTetromino();
+    void moveDown();
+    void moveRight();
+    void moveLeft();
+    void turn();
+    void keyPressEvent(QKeyEvent *) override;
 
 private:
     static const int rows = 20;
@@ -44,6 +46,7 @@ private:
     static const int offSetY = 10;
     tetromino* actuel = nullptr;
     QColor grid[rows][cols];
+
 signals:
 };
 

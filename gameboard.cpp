@@ -3,6 +3,7 @@
 #include <QRandomGenerator>
 #include <QDebug>
 #include <QTimer>
+#include <QKeyEvent>
 
 GameBoard::GameBoard(QWidget *parent)
     : QWidget{parent}
@@ -22,10 +23,13 @@ GameBoard::GameBoard(QWidget *parent)
         }
     }
 
-    //move the tetromino
+    //move down the tetromino throuh the time
     QTimer *myTimer = new QTimer(this);
     connect(myTimer, &QTimer::timeout, this, &GameBoard::moveDown);
-    myTimer->start(200);
+    myTimer->start(200); //choose the period to move the tetromino (ms)
+
+    //move with directional keyboard key
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
@@ -134,8 +138,54 @@ void GameBoard::moveDown(){
             int y = actuel->pos.y()+actuel->forme[i].y();
             grid[x][y] = actuel->color;
         }
-        generateTetromino();
+        generateTetromino(); //next tetromino
     }else
         actuel->pos.setX(newPosX); //move down the referent point of the tetromino of 1 block
     update();//update the image
+}
+
+void GameBoard::moveRight(){
+    int newY = actuel->pos.y()+1;
+    bool collision = false;
+    //detect collision
+    for(int i=0;i<4;i++){
+        int x = actuel->pos.x()+actuel->forme[i].x();
+        int y = newY+actuel->forme[i].y();
+        if((y>cols-1)||grid[x][y].isValid())
+        {
+            collision = true;
+            break;
+        }
+    }
+    if(!collision) actuel->pos.setY(newY); //move right the referent point of the tetromino of 1 block
+    update();//update the image
+}
+
+void GameBoard::moveLeft(){
+    int newY = actuel->pos.y()-1;
+    bool collision = false;
+    //detect collision
+    for(int i=0;i<4;i++){
+        int x = actuel->pos.x()+actuel->forme[i].x();
+        int y = newY+actuel->forme[i].y();
+        if((y<0)||grid[x][y].isValid())
+        {
+            collision = true;
+            break;
+        }
+    }
+    if(!collision) actuel->pos.setY(newY); //move right the referent point of the tetromino of 1 block
+    update();//update the image
+}
+
+void GameBoard::keyPressEvent(QKeyEvent *event){
+    if(event->key() == Qt::Key_Right){
+        moveRight();
+    }else if(event->key() == Qt::Key_Left){
+        moveLeft();
+    }else if(event->key() == Qt::Key_Down){
+        moveDown();
+    }else if(event->key() == Qt::Key_Up){
+        //turn();
+    }
 }
