@@ -28,7 +28,7 @@ GameBoard::GameBoard(QWidget *parent)
     connect(myTimer, &QTimer::timeout, this, &GameBoard::moveDown);
     myTimer->start(200); //choose the period to move the tetromino (ms)
 
-    //move with directional keyboard key
+    //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -174,7 +174,49 @@ void GameBoard::moveLeft(){
             break;
         }
     }
-    if(!collision) actuel->pos.setY(newY); //move right the referent point of the tetromino of 1 block
+    if(!collision) actuel->pos.setY(newY); //move left the referent point of the tetromino of 1 block
+    update();//update the image
+}
+
+void GameBoard::turn(){
+    bool collision = false;
+    //detect collision
+    for(int i=0;i<4;i++){
+        int x = actuel->pos.x()+actuel->forme[i].y();
+        int y = actuel->pos.y()-(actuel->forme[i].x());
+        if((y<0)||(y>cols-1)||(x<0)||(x>rows-1)||grid[x][y].isValid())
+        {
+            collision = true;
+            break;
+        }
+    }
+    if(!collision){
+        for(int i=0;i<4;i++){
+            int tempX = actuel->forme[i].x();
+            int tempY = actuel->forme[i].y();
+            actuel->forme[i].setX(tempY);
+            actuel->forme[i].setY(-tempX);
+        }
+    }
+    update();//update the image
+}
+
+void GameBoard::drop(){
+    bool collision = true;
+    int tempRow = rows-2;
+    while(collision && tempRow>0){
+        int i;
+        for(i=0;i<4;i++){
+            int x = tempRow + actuel->forme[i].x();
+            int y = actuel->pos.y() + actuel->forme[i].y();
+            if(grid[x][y].isValid()||x>rows-1) break;
+        }
+        if(i==4) collision = false;
+        else tempRow--;
+    }
+
+    if(!collision) actuel->pos.setX(tempRow);
+
     update();//update the image
 }
 
@@ -186,6 +228,8 @@ void GameBoard::keyPressEvent(QKeyEvent *event){
     }else if(event->key() == Qt::Key_Down){
         moveDown();
     }else if(event->key() == Qt::Key_Up){
-        //turn();
+        turn();
+    }else if(event->key() == Qt::Key_Space){
+        drop();
     }
 }

@@ -36,6 +36,7 @@ public:
     void moveRight();
     void moveLeft();
     void turn();
+    void drop();
     void keyPressEvent(QKeyEvent *) override;
 
 private:
