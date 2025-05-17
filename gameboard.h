@@ -2,6 +2,8 @@
 #define GAMEBOARD_H
 
 #include <QWidget>
+#include <QLabel>
+#include <QPushButton>
 
 enum formeEnum{
     l, t, z, s, L, J, o
@@ -38,6 +40,8 @@ public:
     void turn();
     void drop();
     void keyPressEvent(QKeyEvent *) override;
+    void deleteRow();
+    void gameOverCheck();
 
 private:
     static const int rows = 20;
@@ -47,6 +51,9 @@ private:
     static const int offSetY = 10;
     tetromino* actuel = nullptr;
     QColor grid[rows][cols];
+    QTimer *gameTimer;
+    QLabel *gameOverLabel;
+    QPushButton *tryAgain;
 
 signals:
 };
