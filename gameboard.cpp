@@ -28,7 +28,7 @@ GameBoard::GameBoard(QWidget *parent)
     //move down the tetromino throuh the time
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::moveDown);
-    gameTimer->start(200); //choose the period to move the tetromino (ms)
+    gameTimer->start(1000); //choose the period to move the tetromino (ms)
 
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
@@ -148,7 +148,6 @@ void GameBoard::moveDown(){
         deleteRow(); //check if there is a row to delete
         update(); //update the image
     }
-
 }
 
 void GameBoard::moveRight(){
@@ -216,25 +215,28 @@ void GameBoard::turn(){
 }
 
 void GameBoard::drop(){
-    bool collision = true;
-    int tempRow = rows-2; //-2 because the height of a tetromino is at least 2
-    while(collision && tempRow>0){
-        int i;
-        for(i=0;i<4;i++){
+    bool collision = false;
+    int tempRow = actuel->pos.x();
+    while(!collision){
+        for(int i=0;i<4;i++){
             int x = tempRow + actuel->forme[i].x();
             int y = actuel->pos.y() + actuel->forme[i].y();
-            if(grid[x][y].isValid()||x>rows-1) break;
+            if(grid[x][y].isValid()||x>rows-1){
+                collision = true;
+                break;
+            }
         }
-        if(i==4) collision = false;
-        else tempRow--;
+        if(!collision) tempRow++;
     }
 
-    if(!collision){
-        actuel->pos.setX(tempRow);
-        deleteRow(); //check if there is a row to delete
-        update();//update the image
-    }else
-        generateTetromino(); //next tetromino
+    actuel->pos.setX(tempRow-1);
+    for(int i =0;i<4;i++){
+        int x = actuel->pos.x()+actuel->forme[i].x();
+        int y = actuel->pos.y()+actuel->forme[i].y();
+        grid[x][y] = actuel->color;
+    }
+    deleteRow(); //check if there is a row to delete
+    generateTetromino();
 }
 
 void GameBoard::keyPressEvent(QKeyEvent *event){
@@ -266,7 +268,7 @@ void GameBoard::deleteRow(){
             for(int k=i;k>0;k--){ //shift above rows of one row down
                 std::copy(std::begin(grid[k-1]), std::end(grid[k-1]), grid[k]);
             }
-            for(int k=0;k<cols;k++){
+            for(int k=0;k<cols;k++){ //the upper row is empty
                 grid[0][k] = QColor();
             }
         }
@@ -274,15 +276,20 @@ void GameBoard::deleteRow(){
 }
 
 void GameBoard::gameOverCheck(){
+    bool collision = false;
     for(int i=0;i<4;i++){
         int x = actuel->pos.x()+actuel->forme[i].x();
         int y = actuel->pos.y()+actuel->forme[i].y();
         if(grid[x][y].isValid()){
-            gameTimer->stop();
-            gameOverLabel = new QLabel(this);
-            gameOverLabel->setText("Gave Over!");
-            gameOverLabel->setStyleSheet("color: rgb(255, 0, 0);");
-            tryAgain = new QPushButton("Try Again", this);
+            collision = true;
+            break;
         }
     }
+    if(collision){
+        gameTimer->stop();
+        gameOverLabel = new QLabel(this);
+        gameOverLabel->setText("Gave Over!");
+        gameOverLabel->setStyleSheet("color: rgb(255, 0, 0);");
+        tryAgain = new QPushButton("Try Again", this);
+    }else update();
 }
