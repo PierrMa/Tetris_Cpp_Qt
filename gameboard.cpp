@@ -6,6 +6,8 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QMessageBox>
 
 GameBoard::GameBoard(QWidget *parent)
     : QWidget{parent}
@@ -28,7 +30,7 @@ GameBoard::GameBoard(QWidget *parent)
     //move down the tetromino throuh the time
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::moveDown);
-    gameTimer->start(1000); //choose the period to move the tetromino (ms)
+    gameTimer->start(timerPeriod); //choose the period to move the tetromino (ms)
 
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
@@ -287,9 +289,58 @@ void GameBoard::gameOverCheck(){
     }
     if(collision){
         gameTimer->stop();
-        gameOverLabel = new QLabel(this);
-        gameOverLabel->setText("Gave Over!");
-        gameOverLabel->setStyleSheet("color: rgb(255, 0, 0);");
-        tryAgain = new QPushButton("Try Again", this);
+
+        QDialog *dialog = new QDialog(this);
+        dialog->setWindowTitle("Game Over");
+        dialog->setModal(true);  // bloque les autres interactions
+
+        QLabel *label = new QLabel("Game Over");
+        label->setAlignment(Qt::AlignCenter);
+        QFont font = label->font();
+        font.setPointSize(26);
+        font.setBold(true);
+        label->setFont(font);
+        label->setStyleSheet("color: rgb(255,0,0);");
+
+        QPushButton *tryAgainBtn = new QPushButton("Try Again");
+        QPushButton *menuBtn     = new QPushButton("Menu");
+        QPushButton *quitBtn     = new QPushButton("Quit");
+
+        // Connexions aux actions
+        connect(tryAgainBtn, &QPushButton::clicked, [=](){
+            dialog->accept(); //close the pop up
+            tryAgain(); //restart the game
+        });
+
+        connect(menuBtn, &QPushButton::clicked, [=]() {
+            dialog->accept();
+            //backToMenu(); //A implémenter quand j'aurai implémenté le menu
+        });
+
+        connect(quitBtn, &QPushButton::clicked, [=]() {
+            qApp->quit();
+        });
+
+        // Layout vertical
+        QVBoxLayout *layout = new QVBoxLayout(dialog);
+        layout->addWidget(label);
+        layout->addWidget(tryAgainBtn);
+        layout->addWidget(menuBtn);
+        layout->addWidget(quitBtn);
+        dialog->setLayout(layout);
+        dialog->exec(); // Affiche en mode blocant
     }else update();
+}
+
+void GameBoard::tryAgain(){
+    //clear the grid
+    for(int x=0;x<rows;x++){
+        for(int y=0;y<cols;y++){
+            grid[x][y] = QColor();
+        }
+    }
+
+    generateTetromino(); //generate a new tetromino
+
+    gameTimer->start(timerPeriod); //restart timer
 }

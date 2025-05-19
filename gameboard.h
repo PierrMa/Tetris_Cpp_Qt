@@ -42,6 +42,7 @@ public:
     void keyPressEvent(QKeyEvent *) override;
     void deleteRow();
     void gameOverCheck();
+    void tryAgain();
 
 private:
     static const int rows = 20;
@@ -53,7 +54,7 @@ private:
     QColor grid[rows][cols];
     QTimer *gameTimer;
     QLabel *gameOverLabel;
-    QPushButton *tryAgain;
+    static const int timerPeriod = 500;
 
 signals:
 };
