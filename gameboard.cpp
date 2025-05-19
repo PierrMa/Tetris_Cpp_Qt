@@ -296,11 +296,7 @@ void GameBoard::gameOverCheck(){
 
         QLabel *label = new QLabel("Game Over");
         label->setAlignment(Qt::AlignCenter);
-        QFont font = label->font();
-        font.setPointSize(26);
-        font.setBold(true);
-        label->setFont(font);
-        label->setStyleSheet("color: rgb(255,0,0);");
+        label->setStyleSheet("color: rgb(255,0,0); font-size: 26px; font-weight: bold");
 
         QPushButton *tryAgainBtn = new QPushButton("Try Again");
         QPushButton *menuBtn     = new QPushButton("Menu");
@@ -321,14 +317,25 @@ void GameBoard::gameOverCheck(){
             qApp->quit();
         });
 
-        // Layout vertical
+        //Add vertical layout
         QVBoxLayout *layout = new QVBoxLayout(dialog);
         layout->addWidget(label);
-        layout->addWidget(tryAgainBtn);
-        layout->addWidget(menuBtn);
-        layout->addWidget(quitBtn);
-        dialog->setLayout(layout);
-        dialog->exec(); // Affiche en mode blocant
+
+        //Add horizontal Layout for each button and add it to the vertical layout
+        auto addCenteredButton = [&](QPushButton *button) {
+            button->setFixedWidth(120); // fixe width for each button
+            QHBoxLayout *hLayout = new QHBoxLayout;
+            hLayout->addStretch(); //left space
+            hLayout->addWidget(button);  //the button in the middle
+            hLayout->addStretch(); // right space
+            layout->addLayout(hLayout); //add the horizontal layout to the vertical layout
+        };
+        addCenteredButton(tryAgainBtn);
+        addCenteredButton(menuBtn);
+        addCenteredButton(quitBtn);
+
+        dialog->setLayout(layout); //apply the main layout
+        dialog->exec(); //display the pop up
     }else update();
 }
 
@@ -344,3 +351,4 @@ void GameBoard::tryAgain(){
 
     gameTimer->start(timerPeriod); //restart timer
 }
+
