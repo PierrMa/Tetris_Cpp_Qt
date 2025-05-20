@@ -2,14 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPainter>
-#include <QWidget>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
 
 class GameBoard;
 
@@ -22,7 +14,6 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
     GameBoard *board;
 
 };

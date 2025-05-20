@@ -2,7 +2,6 @@
 #define GAMEBOARD_H
 
 #include <QWidget>
-#include <QBoxLayout>
 
 enum formeEnum{
     l, t, z, s, L, J, o
@@ -42,7 +41,6 @@ public:
     void deleteRow();
     void gameOverCheck();
     void tryAgain();
-    QVBoxLayout* getVScoreLayout(){return vScoreLayout;}
     void pause();
 
 private:
@@ -55,7 +53,6 @@ private:
     QColor grid[rows][cols];
     QTimer *gameTimer;
     static const int timerPeriod = 500;
-    QVBoxLayout *vScoreLayout;
 
 signals:
 };

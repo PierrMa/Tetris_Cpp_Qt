@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QBoxLayout>
 
 GameBoard::GameBoard(QWidget *parent)
     : QWidget{parent}
@@ -33,21 +34,6 @@ GameBoard::GameBoard(QWidget *parent)
 
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
-
-    //Score
-    QLabel *scoreTxtLabel = new QLabel("Score", this);
-    scoreTxtLabel->setFixedHeight(30);
-    scoreTxtLabel->setStyleSheet("font-weight: bold; font-size: 26px;");
-    QLabel *scoreValueLabel = new QLabel("0", this);
-    scoreValueLabel->setFixedHeight(30);
-    scoreValueLabel->setStyleSheet("font-weight: bold; font-size: 26px;");
-    scoreValueLabel->setAlignment(Qt::AlignCenter);
-
-    vScoreLayout = new QVBoxLayout(this);
-    vScoreLayout->setAlignment(Qt::AlignCenter);
-    vScoreLayout->addWidget(scoreTxtLabel);
-    vScoreLayout->addWidget(scoreValueLabel);
-
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
@@ -398,7 +384,7 @@ void GameBoard::pause(){
         qApp->quit();
     });
 
-    QVBoxLayout *menuLayout = new QVBoxLayout(this);
+    QVBoxLayout *menuLayout = new QVBoxLayout();
     menuLayout->addWidget(resumeBtn);
     menuLayout->addWidget(restartBtn);
     menuLayout->addWidget(menuBtn);
