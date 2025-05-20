@@ -43,6 +43,11 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     setWindowTitle("Tetris");
     resize(400,500);
+
+    connect(board, &GameBoard::rowDeleted, [=](){
+        gameScore += 10;
+        scoreValueLabel->setText(QString::number(gameScore));
+    });
 }
 
 MainWindow::~MainWindow(){}

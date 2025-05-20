@@ -55,6 +55,8 @@ private:
     static const int timerPeriod = 500;
 
 signals:
+    void rowDeleted();
+
 };
 
 #endif // GAMEBOARD_H

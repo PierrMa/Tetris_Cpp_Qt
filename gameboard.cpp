@@ -268,13 +268,14 @@ void GameBoard::deleteRow(){
                 break;
             }
         }
-        if(!isEmpty){
+        if(!isEmpty){ //if there is que complete row, delete it
             for(int k=i;k>0;k--){ //shift above rows of one row down
                 std::copy(std::begin(grid[k-1]), std::end(grid[k-1]), grid[k]);
             }
             for(int k=0;k<cols;k++){ //the upper row is empty
                 grid[0][k] = QColor();
             }
+            emit rowDeleted(); //signal to increment the score
         }
     }
 }

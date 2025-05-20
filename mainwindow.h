@@ -15,6 +15,6 @@ public:
 
 private:
     GameBoard *board;
-
+    int gameScore = 0;
 };
 #endif // MAINWINDOW_H
