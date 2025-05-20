@@ -6,7 +6,6 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
-#include <QVBoxLayout>
 #include <QMessageBox>
 
 GameBoard::GameBoard(QWidget *parent)
@@ -34,6 +33,21 @@ GameBoard::GameBoard(QWidget *parent)
 
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
+
+    //Score
+    QLabel *scoreTxtLabel = new QLabel("Score", this);
+    scoreTxtLabel->setFixedHeight(30);
+    scoreTxtLabel->setStyleSheet("font-weight: bold; font-size: 26px;");
+    QLabel *scoreValueLabel = new QLabel("0", this);
+    scoreValueLabel->setFixedHeight(30);
+    scoreValueLabel->setStyleSheet("font-weight: bold; font-size: 26px;");
+    scoreValueLabel->setAlignment(Qt::AlignCenter);
+
+    vScoreLayout = new QVBoxLayout(this);
+    vScoreLayout->setAlignment(Qt::AlignCenter);
+    vScoreLayout->addWidget(scoreTxtLabel);
+    vScoreLayout->addWidget(scoreValueLabel);
+
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
@@ -252,6 +266,8 @@ void GameBoard::keyPressEvent(QKeyEvent *event){
         turn();
     }else if(event->key() == Qt::Key_Space){
         drop();
+    }else if(event->key() == Qt::Key_Escape){
+        pause();
     }
 }
 
@@ -352,3 +368,41 @@ void GameBoard::tryAgain(){
     gameTimer->start(timerPeriod); //restart timer
 }
 
+void GameBoard::pause(){
+    gameTimer->stop();
+    QDialog *pauseMenu = new QDialog(this);
+    pauseMenu->setWindowTitle("Pause");
+    pauseMenu->setModal(true);
+
+    QPushButton *resumeBtn = new QPushButton("Resume", pauseMenu);
+    resumeBtn->setFixedWidth(120);
+    connect(resumeBtn, &QPushButton::clicked, [=](){
+        pauseMenu->accept();
+        gameTimer->start(timerPeriod);
+    });
+    QPushButton *restartBtn = new QPushButton("Restart", pauseMenu);
+    restartBtn->setFixedWidth(120);
+    connect(restartBtn, &QPushButton::clicked, [=](){
+        pauseMenu->accept();
+        tryAgain();
+    });
+    QPushButton *menuBtn = new QPushButton("Menu", pauseMenu);
+    menuBtn->setFixedWidth(120);
+    connect(menuBtn, &QPushButton::clicked, [=]() {
+        pauseMenu->accept();
+        //backToMenu(); //A implémenter quand j'aurai implémenté le menu
+    });
+    QPushButton *quitBtn = new QPushButton("Quit", pauseMenu);
+    quitBtn->setFixedWidth(120);
+    connect(quitBtn, &QPushButton::clicked, [=]() {
+        qApp->quit();
+    });
+
+    QVBoxLayout *menuLayout = new QVBoxLayout(this);
+    menuLayout->addWidget(resumeBtn);
+    menuLayout->addWidget(restartBtn);
+    menuLayout->addWidget(menuBtn);
+    menuLayout->addWidget(quitBtn);
+    pauseMenu->setLayout(menuLayout);
+    pauseMenu->exec();
+}

@@ -2,7 +2,7 @@
 #include "./ui_mainwindow.h"
 #include "gameboard.h"
 
-#include <QVBoxLayout>
+#include <QBoxLayout>
 
 MainWindow::MainWindow(QMainWindow *parent)
     : QMainWindow(parent)
@@ -14,7 +14,11 @@ MainWindow::MainWindow(QMainWindow *parent)
     setCentralWidget(board);
 
     setWindowTitle("Tetris");
-    resize(300,500);
+    resize(400,500);
+
+    QHBoxLayout *hScoreLayout = new QHBoxLayout(this);
+    hScoreLayout->setAlignment(Qt::AlignRight);
+    hScoreLayout->addLayout(board->getVScoreLayout());
 }
 
 MainWindow::~MainWindow()
