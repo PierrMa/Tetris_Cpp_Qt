@@ -36,4 +36,11 @@ MenuWidget::MenuWidget(QWidget *parent)
     btnLayout->addWidget(playBtn);
     btnLayout->addWidget(settingBtn);
     btnLayout->addWidget(quitBtn);
+
+    //style
+    this->setAutoFillBackground(true);
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor(Qt::green));
+    this->setPalette(palette);
+    this->setStyleSheet("font-weight: Bold; font-size: 22px; color: grey");
 }

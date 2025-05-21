@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "gameboard.h"
 #include "menuwidget.h"
+#include "settings.h"
 
 #include <QBoxLayout>
 #include <QLabel>
@@ -11,9 +12,11 @@ MainWindow::MainWindow(QMainWindow *parent)
     //Layouts and containers
     stack = new QStackedWidget(this); //contain the different pages
     QWidget *gameContainer = new QWidget(stack);
-    menu = new MenuWidget;
+    menu = new MenuWidget(stack);
+    settings = new Settings(this);
     stack->addWidget(gameContainer);
     stack->addWidget(menu);
+    stack->addWidget(settings);
     QHBoxLayout *gameContainerLayout = new QHBoxLayout(gameContainer); //main layout
     QVBoxLayout *scoreLayout = new QVBoxLayout(); //Layout for the score
 
@@ -65,6 +68,16 @@ MainWindow::MainWindow(QMainWindow *parent)
     //page to display if goToGame signal is emit
     connect(menu,&MenuWidget::goToGame,[=](){
         stack->setCurrentWidget(gameContainer);
+        stack->show();
+    });
+    //page to display if goToSettings signal is emit
+    connect(menu,&MenuWidget::goToSettings,[=](){
+        stack->setCurrentWidget(settings);
+        stack->show();
+    });
+    //page to display if cancelClicked signal is emit
+    connect(settings,&Settings::cancelClicked,[=](){
+        stack->setCurrentWidget(menu);
         stack->show();
     });
 

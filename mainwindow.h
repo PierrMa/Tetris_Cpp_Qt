@@ -6,6 +6,7 @@
 
 class GameBoard;
 class MenuWidget;
+class Settings;
 
 class MainWindow : public QMainWindow
 {
@@ -16,9 +17,10 @@ public:
     ~MainWindow();
 
 private:
-    QStackedWidget *stack;
-    GameBoard *board;
-    MenuWidget *menu;
+    QStackedWidget* stack;
+    GameBoard* board;
+    MenuWidget* menu;
+    Settings* settings;
     int gameScore = 0;
 };
 #endif // MAINWINDOW_H
