@@ -30,7 +30,6 @@ GameBoard::GameBoard(QWidget *parent)
     //move down the tetromino throuh the time
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::moveDown);
-    gameTimer->start(timerPeriod); //choose the period to move the tetromino (ms)
 
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
@@ -313,7 +312,7 @@ void GameBoard::gameOverCheck(){
 
         connect(menuBtn, &QPushButton::clicked, [=]() {
             dialog->accept();
-            //backToMenu(); //A implémenter quand j'aurai implémenté le menu
+            emit backToMenu();
         });
 
         connect(quitBtn, &QPushButton::clicked, [=]() {
@@ -377,7 +376,7 @@ void GameBoard::pause(){
     menuBtn->setFixedWidth(120);
     connect(menuBtn, &QPushButton::clicked, [=]() {
         pauseMenu->accept();
-        //backToMenu(); //A implémenter quand j'aurai implémenté le menu
+        emit backToMenu();
     });
     QPushButton *quitBtn = new QPushButton("Quit", pauseMenu);
     quitBtn->setFixedWidth(120);
@@ -392,4 +391,8 @@ void GameBoard::pause(){
     menuLayout->addWidget(quitBtn);
     pauseMenu->setLayout(menuLayout);
     pauseMenu->exec();
+}
+
+void GameBoard::startTimer(){
+    gameTimer->start(timerPeriod); //choose the period to move the tetromino (ms)
 }

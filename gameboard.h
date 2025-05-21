@@ -56,7 +56,10 @@ private:
 
 signals:
     void rowDeleted();
+    void backToMenu();
 
+public slots:
+    void startTimer();
 };
 
 #endif // GAMEBOARD_H

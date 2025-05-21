@@ -24,6 +24,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         gameboard.h gameboard.cpp
+        menuwidget.h menuwidget.cpp
 
 
     )
