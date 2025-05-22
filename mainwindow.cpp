@@ -71,6 +71,12 @@ MainWindow::MainWindow(QMainWindow *parent)
     });
     //page to display if goToSettings signal is emit
     connect(menu,&MenuWidget::goToSettings,[=](){
+        settings->setLeftKeyField(board->getLeftCmd());
+        settings->setRightKeyField(board->getRightCmd());
+        settings->setDownKeyField(board->getDownCmd());
+        settings->setRotateKeyField(board->getRotateCmd());
+        settings->setDropKeyField(board->getDropCmd());
+        settings->setBreakKeyField(board->getBreakCmd());
         stack->setCurrentWidget(settings);
         stack->show();
     });

@@ -44,12 +44,12 @@ public:
     void tryAgain();
     void pause();
     void clearBoard();
-    QKeySequence getLeftCmd(){return leftKey;}
-    QKeySequence getRightCmd(){return rightKey;}
-    QKeySequence getDownCmd(){return downKey;}
-    QKeySequence getRotateCmd(){return rotateKey;}
-    QKeySequence getDropCmd(){return dropKey;}
-    QKeySequence getBreakCmd(){return breakKey;}
+    QKeySequence getLeftCmd()const{return leftKey;}
+    QKeySequence getRightCmd()const{return rightKey;}
+    QKeySequence getDownCmd()const{return downKey;}
+    QKeySequence getRotateCmd()const{return rotateKey;}
+    QKeySequence getDropCmd()const{return dropKey;}
+    QKeySequence getBreakCmd()const{return breakKey;}
     void setLeftCmd(QKeySequence newLeftCmd){leftKey = newLeftCmd;}
     void setRightCmd(QKeySequence newRightCmd){rightKey = newRightCmd;}
     void setDownCmd(QKeySequence newDownCmd){downKey = newDownCmd;}

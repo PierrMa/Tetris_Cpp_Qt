@@ -3,7 +3,6 @@
 
 #include <QLabel>
 #include <QFormLayout>
-#include <QKeySequenceEdit>
 #include <QPushButton>
 #include <QSizePolicy>
 
@@ -12,24 +11,24 @@ Settings::Settings(QWidget *parent, GameBoard* board)
 {
     int formFieldHeight = 25;
     int formFieldWidth = 50;
-    QKeySequenceEdit* leftKey = new QKeySequenceEdit(board->getLeftCmd(),this);
-    leftKey->setFixedHeight(formFieldHeight);
-    leftKey->setFixedWidth(formFieldWidth);
-    QKeySequenceEdit* rightKey = new QKeySequenceEdit(board->getRightCmd(),this);
-    rightKey->setFixedHeight(formFieldHeight);
-    rightKey->setFixedWidth(formFieldWidth);
-    QKeySequenceEdit* downKey = new QKeySequenceEdit(board->getDownCmd(),this);
-    downKey->setFixedHeight(formFieldHeight);
-    downKey->setFixedWidth(formFieldWidth);
-    QKeySequenceEdit* rotateKey = new QKeySequenceEdit(board->getRotateCmd(),this);
-    rotateKey->setFixedHeight(formFieldHeight);
-    rotateKey->setFixedWidth(formFieldWidth);
-    QKeySequenceEdit* dropKey = new QKeySequenceEdit(board->getDropCmd(),this);
-    dropKey->setFixedHeight(formFieldHeight);
-    dropKey->setFixedWidth(formFieldWidth);
-    QKeySequenceEdit* breakKey = new QKeySequenceEdit(board->getBreakCmd(),this);
-    breakKey->setFixedHeight(formFieldHeight);
-    breakKey->setFixedWidth(formFieldWidth);
+    leftKeyField = new QKeySequenceEdit(this);
+    leftKeyField->setFixedHeight(formFieldHeight);
+    leftKeyField->setFixedWidth(formFieldWidth);
+    rightKeyField = new QKeySequenceEdit(this);
+    rightKeyField->setFixedHeight(formFieldHeight);
+    rightKeyField->setFixedWidth(formFieldWidth);
+    downKeyField = new QKeySequenceEdit(this);
+    downKeyField->setFixedHeight(formFieldHeight);
+    downKeyField->setFixedWidth(formFieldWidth);
+    rotateKeyField = new QKeySequenceEdit(this);
+    rotateKeyField->setFixedHeight(formFieldHeight);
+    rotateKeyField->setFixedWidth(formFieldWidth);
+    dropKeyField = new QKeySequenceEdit(this);
+    dropKeyField->setFixedHeight(formFieldHeight);
+    dropKeyField->setFixedWidth(formFieldWidth);
+    breakKeyField = new QKeySequenceEdit(this);
+    breakKeyField->setFixedHeight(formFieldHeight);
+    breakKeyField->setFixedWidth(formFieldWidth);
 
     QFont labelFont("Segoe", 12, QFont::Bold, false);
     QLabel* leftLabel = new QLabel("Left",this);
@@ -47,12 +46,12 @@ Settings::Settings(QWidget *parent, GameBoard* board)
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     QFormLayout* formLayout = new QFormLayout;
-    formLayout->addRow(leftLabel,leftKey);
-    formLayout->addRow(rightLabel,rightKey);
-    formLayout->addRow(downLabel,downKey);
-    formLayout->addRow(rotateLabel,rotateKey);
-    formLayout->addRow(dropLabel,dropKey);
-    formLayout->addRow(breakLabel,breakKey);
+    formLayout->addRow(leftLabel,leftKeyField);
+    formLayout->addRow(rightLabel,rightKeyField);
+    formLayout->addRow(downLabel,downKeyField);
+    formLayout->addRow(rotateLabel,rotateKeyField);
+    formLayout->addRow(dropLabel,dropKeyField);
+    formLayout->addRow(breakLabel,breakKeyField);
     formLayout->setFormAlignment(Qt::AlignCenter);
     QHBoxLayout* buttonLayout = new QHBoxLayout;
 
@@ -61,6 +60,45 @@ Settings::Settings(QWidget *parent, GameBoard* board)
     QPushButton* saveBtn = new QPushButton("Save",this);
     saveBtn->setFixedHeight(btnHeight);
     saveBtn->setFixedWidth(btnWidth);
+    connect(saveBtn, &QPushButton::clicked,[=](){
+        QKeySequence val = leftKeyField->keySequence();
+        if(val!=board->getRightCmd() &&val!=board->getDownCmd()
+            &&val!=board->getRotateCmd() &&val!=board->getDropCmd()
+            &&val!=board->getBreakCmd())
+            board->setLeftCmd(val);
+
+        val = rightKeyField->keySequence();
+        if(val!=board->getLeftCmd() && val!=board->getDownCmd()
+            &&val!=board->getRotateCmd() &&val!=board->getDropCmd()
+            &&val!=board->getBreakCmd())
+            board->setRightCmd(val);
+
+        val = downKeyField->keySequence();
+        if(val!=board->getLeftCmd() && val!=board->getRightCmd()
+            &&val!=board->getRotateCmd() &&val!=board->getDropCmd()
+            &&val!=board->getBreakCmd())
+            board->setDownCmd(val);
+
+        val = rotateKeyField->keySequence();
+        if(val!=board->getLeftCmd() && val!=board->getRightCmd()
+            &&val!=board->getDownCmd() &&val!=board->getDropCmd()
+            &&val!=board->getBreakCmd())
+            board->setRotateCmd(val);
+
+        val = dropKeyField->keySequence();
+        if(val!=board->getLeftCmd() && val!=board->getRightCmd()
+            &&val!=board->getDownCmd() &&val!=board->getRotateCmd()
+            &&val!=board->getBreakCmd())
+            board->setDropCmd(val);
+
+        val = breakKeyField->keySequence();
+        if(val!=board->getLeftCmd() && val!=board->getRightCmd()
+            &&val!=board->getDownCmd() &&val!=board->getRotateCmd()
+            &&val!=board->getDropCmd())
+            board->setBreakCmd(val);
+
+        emit cancelClicked();
+    });
     QPushButton* cancelBtn = new QPushButton("Cancel",this);
     cancelBtn->setFixedHeight(btnHeight);
     cancelBtn->setFixedWidth(btnWidth);
@@ -75,4 +113,23 @@ Settings::Settings(QWidget *parent, GameBoard* board)
     mainLayout->addLayout(formLayout);
     mainLayout->addLayout(buttonLayout);
     mainLayout->setAlignment(Qt::AlignCenter);
+}
+
+void Settings::setLeftKeyField(QKeySequence val){
+    leftKeyField->setKeySequence(val);
+}
+void Settings::setRightKeyField(QKeySequence val){
+    rightKeyField->setKeySequence(val);
+}
+void Settings::setDownKeyField(QKeySequence val){
+    downKeyField->setKeySequence(val);
+}
+void Settings::setRotateKeyField(QKeySequence val){
+    rotateKeyField->setKeySequence(val);
+}
+void Settings::setDropKeyField(QKeySequence val){
+    dropKeyField->setKeySequence(val);
+}
+void Settings::setBreakKeyField(QKeySequence val){
+    breakKeyField->setKeySequence(val);
 }
