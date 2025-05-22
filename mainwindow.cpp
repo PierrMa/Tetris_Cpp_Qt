@@ -5,6 +5,7 @@
 
 #include <QBoxLayout>
 #include <QLabel>
+#include <QDebug>
 
 MainWindow::MainWindow(QMainWindow *parent)
     : QMainWindow(parent)
@@ -12,16 +13,14 @@ MainWindow::MainWindow(QMainWindow *parent)
     //Layouts and containers
     stack = new QStackedWidget(this); //contain the different pages
     QWidget *gameContainer = new QWidget(stack);
+    board = new GameBoard(gameContainer);
     menu = new MenuWidget(stack);
-    settings = new Settings(this);
+    settings = new Settings(this,board);
     stack->addWidget(gameContainer);
     stack->addWidget(menu);
     stack->addWidget(settings);
     QHBoxLayout *gameContainerLayout = new QHBoxLayout(gameContainer); //main layout
     QVBoxLayout *scoreLayout = new QVBoxLayout(); //Layout for the score
-
-    //Gameboard
-    board = new GameBoard(gameContainer);
 
     //Score Labels
     QWidget *scoreWidget = new QWidget(gameContainer);
@@ -82,6 +81,10 @@ MainWindow::MainWindow(QMainWindow *parent)
     });
 
     connect(menu, &MenuWidget::playBtnClicked, board, &GameBoard::startTimer);
+    connect(board, &GameBoard::resetScore,[=](){
+        gameScore = 0;
+        scoreValueLabel->setText(QString::number(gameScore));
+    });
 }
 
 MainWindow::~MainWindow(){}

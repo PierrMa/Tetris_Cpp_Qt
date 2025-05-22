@@ -3,12 +3,13 @@
 
 #include <QWidget>
 
+class GameBoard;
+
 class Settings : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Settings(QWidget *parent = nullptr);
-
+    explicit Settings(QWidget *parent = nullptr, GameBoard* board = nullptr);
 signals:
     void cancelClicked();
 };

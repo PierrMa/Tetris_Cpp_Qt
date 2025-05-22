@@ -2,6 +2,7 @@
 #define GAMEBOARD_H
 
 #include <QWidget>
+#include <QKeySequence>
 
 enum formeEnum{
     l, t, z, s, L, J, o
@@ -42,6 +43,19 @@ public:
     void gameOverCheck();
     void tryAgain();
     void pause();
+    void clearBoard();
+    QKeySequence getLeftCmd(){return leftKey;}
+    QKeySequence getRightCmd(){return rightKey;}
+    QKeySequence getDownCmd(){return downKey;}
+    QKeySequence getRotateCmd(){return rotateKey;}
+    QKeySequence getDropCmd(){return dropKey;}
+    QKeySequence getBreakCmd(){return breakKey;}
+    void setLeftCmd(QKeySequence newLeftCmd){leftKey = newLeftCmd;}
+    void setRightCmd(QKeySequence newRightCmd){rightKey = newRightCmd;}
+    void setDownCmd(QKeySequence newDownCmd){downKey = newDownCmd;}
+    void setRotateCmd(QKeySequence newRotateCmd){rotateKey = newRotateCmd;}
+    void setDropCmd(QKeySequence newDropCmd){dropKey = newDropCmd;}
+    void setBreakCmd(QKeySequence newBreakCmd){breakKey = newBreakCmd;}
 
 private:
     static const int rows = 20;
@@ -53,10 +67,17 @@ private:
     QColor grid[rows][cols];
     QTimer *gameTimer;
     static const int timerPeriod = 500;
+    QKeySequence leftKey = Qt::Key_Left;
+    QKeySequence rightKey = Qt::Key_Right;
+    QKeySequence downKey = Qt::Key_Down;
+    QKeySequence rotateKey = Qt::Key_Up;
+    QKeySequence dropKey = Qt::Key_Space;
+    QKeySequence breakKey = Qt::Key_Escape;
 
 signals:
     void rowDeleted();
     void backToMenu();
+    void resetScore();
 
 public slots:
     void startTimer();

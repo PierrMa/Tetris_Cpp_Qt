@@ -241,17 +241,17 @@ void GameBoard::drop(){
 }
 
 void GameBoard::keyPressEvent(QKeyEvent *event){
-    if(event->key() == Qt::Key_Right){
+    if(event->key() == rightKey[0]){
         moveRight();
-    }else if(event->key() == Qt::Key_Left){
+    }else if(event->key() == leftKey[0]){
         moveLeft();
-    }else if(event->key() == Qt::Key_Down){
+    }else if(event->key() == downKey[0]){
         moveDown();
-    }else if(event->key() == Qt::Key_Up){
+    }else if(event->key() == rotateKey[0]){
         turn();
-    }else if(event->key() == Qt::Key_Space){
+    }else if(event->key() == dropKey[0]){
         drop();
-    }else if(event->key() == Qt::Key_Escape){
+    }else if(event->key() == breakKey[0]){
         pause();
     }
 }
@@ -312,6 +312,7 @@ void GameBoard::gameOverCheck(){
 
         connect(menuBtn, &QPushButton::clicked, [=]() {
             dialog->accept();
+            clearBoard();
             emit backToMenu();
         });
 
@@ -341,13 +342,19 @@ void GameBoard::gameOverCheck(){
     }else update();
 }
 
-void GameBoard::tryAgain(){
+void GameBoard::clearBoard(){
     //clear the grid
     for(int x=0;x<rows;x++){
         for(int y=0;y<cols;y++){
             grid[x][y] = QColor();
         }
     }
+
+    emit resetScore(); //reset the score
+}
+
+void GameBoard::tryAgain(){
+    clearBoard();//clear the grid and reset the score
 
     generateTetromino(); //generate a new tetromino
 
