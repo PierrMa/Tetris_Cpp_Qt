@@ -5,6 +5,7 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QSizePolicy>
+#include <QKeySequenceEdit>
 
 Settings::Settings(QWidget *parent, GameBoard* board)
     : QWidget{parent}
@@ -110,7 +111,18 @@ Settings::Settings(QWidget *parent, GameBoard* board)
     buttonLayout->addWidget(cancelBtn);
     buttonLayout->setAlignment(Qt::AlignCenter);
 
+    muteBtn = new QPushButton("Mute",this);
+    connect(muteBtn,&QPushButton::clicked,[=](){
+        emit muteBtnCliked();
+    });
+    muteBtn->setFixedHeight(btnHeight);
+    muteBtn->setFixedWidth(btnWidth*2);
+    QHBoxLayout* muteLayout = new QHBoxLayout;
+    muteLayout->addWidget(muteBtn);
+    muteLayout->setAlignment(Qt::AlignCenter);
+
     mainLayout->addLayout(formLayout);
+    mainLayout->addLayout(muteLayout);
     mainLayout->addLayout(buttonLayout);
     mainLayout->setAlignment(Qt::AlignCenter);
 }
@@ -132,4 +144,8 @@ void Settings::setDropKeyField(QKeySequence val){
 }
 void Settings::setBreakKeyField(QKeySequence val){
     breakKeyField->setKeySequence(val);
+}
+
+void Settings::setTxtMuteBtn(QString val){
+    muteBtn->setText(val);
 }

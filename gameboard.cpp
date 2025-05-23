@@ -1,4 +1,6 @@
 #include "gameboard.h"
+#include "mainwindow.h"
+
 #include <QPainter>
 #include <QRandomGenerator>
 #include <QDebug>
@@ -9,8 +11,8 @@
 #include <QMessageBox>
 #include <QBoxLayout>
 
-GameBoard::GameBoard(QWidget *parent)
-    : QWidget{parent}
+GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
+    : QWidget{parent}, m_mainwindow(mainwindow)
 {
     //always keep the grid visible
     setFixedSize(cols * cellSize + 20, rows * cellSize + 20);
@@ -291,7 +293,7 @@ void GameBoard::gameOverCheck(){
     }
     if(collision){
         gameTimer->stop();
-
+        m_mainwindow->stopMusic();
         QDialog *dialog = new QDialog(this);
         dialog->setWindowTitle("Game Over");
         dialog->setModal(true);  // bloque les autres interactions
@@ -359,10 +361,13 @@ void GameBoard::tryAgain(){
     generateTetromino(); //generate a new tetromino
 
     gameTimer->start(timerPeriod); //restart timer
+
+    m_mainwindow->playMusicFromTheStart();
 }
 
 void GameBoard::pause(){
     gameTimer->stop();
+    m_mainwindow->pauseMusic();
     QDialog *pauseMenu = new QDialog(this);
     pauseMenu->setWindowTitle("Pause");
     pauseMenu->setModal(true);
@@ -372,6 +377,7 @@ void GameBoard::pause(){
     connect(resumeBtn, &QPushButton::clicked, [=](){
         pauseMenu->accept();
         gameTimer->start(timerPeriod);
+        m_mainwindow->playMusic();
     });
     QPushButton *restartBtn = new QPushButton("Restart", pauseMenu);
     restartBtn->setFixedWidth(120);

@@ -2,9 +2,10 @@
 #define SETTINGS_H
 
 #include <QWidget>
-#include <QKeySequenceEdit>
 
 class GameBoard;
+class QKeySequenceEdit;
+class QPushButton;
 
 class Settings : public QWidget
 {
@@ -17,6 +18,7 @@ public:
     void setRotateKeyField(QKeySequence val);
     void setDropKeyField(QKeySequence val);
     void setBreakKeyField(QKeySequence val);
+    void setTxtMuteBtn(QString);
 
 private:
     QKeySequenceEdit* leftKeyField;
@@ -25,9 +27,11 @@ private:
     QKeySequenceEdit* rotateKeyField;
     QKeySequenceEdit* dropKeyField;
     QKeySequenceEdit* breakKeyField;
+    QPushButton* muteBtn;
 
 signals:
     void cancelClicked();
+    void muteBtnCliked();
 };
 
 #endif // SETTINGS_H

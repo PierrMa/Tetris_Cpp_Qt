@@ -1,6 +1,7 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
+#include "mainwindow.h"
 #include <QWidget>
 #include <QKeySequence>
 
@@ -28,7 +29,7 @@ class GameBoard : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GameBoard(QWidget *parent = nullptr);
+    explicit GameBoard(QWidget *parent = nullptr, MainWindow* mainwindow = nullptr);
     ~GameBoard(){delete actuel;}
     void drawBlock(QPainter &painter, int x, int y, int size, QColor color) ;
     void paintEvent(QPaintEvent *) override;
@@ -73,6 +74,7 @@ private:
     QKeySequence rotateKey = Qt::Key_Up;
     QKeySequence dropKey = Qt::Key_Space;
     QKeySequence breakKey = Qt::Key_Escape;
+    MainWindow* m_mainwindow;
 
 signals:
     void rowDeleted();

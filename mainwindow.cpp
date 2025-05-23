@@ -9,11 +9,26 @@
 
 MainWindow::MainWindow(QMainWindow *parent)
     : QMainWindow(parent)
-{    
+{
+    /********************
+     * Background music *
+     ********************/
+    bgMusicPlayer = new QMediaPlayer(this);
+    bgAudioOutput = new QAudioOutput(this);
+
+    bgMusicPlayer->setAudioOutput(bgAudioOutput);
+    bgMusicPlayer->setSource(QUrl("qrc:/sound/background_music.mp3"));
+    bgAudioOutput->setVolume(50); // volume from 0 to 100
+
+
+
+    /********************
+     *      Pages       *
+     ********************/
     //Layouts and containers
     stack = new QStackedWidget(this); //contain the different pages
     QWidget *gameContainer = new QWidget(stack);
-    board = new GameBoard(gameContainer);
+    board = new GameBoard(gameContainer,this);
     menu = new MenuWidget(stack);
     settings = new Settings(this,board);
     stack->addWidget(gameContainer);
@@ -55,42 +70,95 @@ MainWindow::MainWindow(QMainWindow *parent)
     });
 
     //choose the current page to display
-    //Default page
     setCentralWidget(stack);
-    stack->setCurrentWidget(menu);
+    stack->setCurrentWidget(menu);//default page to display
     stack->show();
-    //page to display if backToMenu signal is emit
+
+    /********************
+     *    Connexions    *
+     ********************/
+    //to do when Menu button is clicked
     connect(board,&GameBoard::backToMenu,[=](){
+        //page to display if backToMenu signal is emit
         stack->setCurrentWidget(menu);
         stack->show();
     });
-    //page to display if goToGame signal is emit
+
+    //to do when Play button is clicked
     connect(menu,&MenuWidget::goToGame,[=](){
+        playMusic();
+        //page to display if goToGame signal is emit
         stack->setCurrentWidget(gameContainer);
         stack->show();
     });
-    //page to display if goToSettings signal is emit
+
+    //to do when Settings button is clicked
     connect(menu,&MenuWidget::goToSettings,[=](){
+        //update of keyfields with the actual commands
         settings->setLeftKeyField(board->getLeftCmd());
         settings->setRightKeyField(board->getRightCmd());
         settings->setDownKeyField(board->getDownCmd());
         settings->setRotateKeyField(board->getRotateCmd());
         settings->setDropKeyField(board->getDropCmd());
         settings->setBreakKeyField(board->getBreakCmd());
+
+        //page to display if goToSettings signal is emit
         stack->setCurrentWidget(settings);
         stack->show();
     });
-    //page to display if cancelClicked signal is emit
+
+    //to do when Cancel button (from Settings page) is clicked
     connect(settings,&Settings::cancelClicked,[=](){
+        //page to display if cancelClicked signal is emit
         stack->setCurrentWidget(menu);
         stack->show();
     });
 
+    //to do when Play button is clicked
     connect(menu, &MenuWidget::playBtnClicked, board, &GameBoard::startTimer);
+
+    //to do when resetScore signal is emitted (after a clik on Restart or Try Again or Menu)
     connect(board, &GameBoard::resetScore,[=](){
         gameScore = 0;
         scoreValueLabel->setText(QString::number(gameScore));
     });
+
+    //to do when Mute button is clicked
+    connect(settings, &Settings::muteBtnCliked,[=](){
+        if(bgAudioOutput->isMuted()){
+            bgAudioOutput->setMuted(false);
+            settings->setTxtMuteBtn("Mute");
+        }else{
+            bgAudioOutput->setMuted(true);
+            settings->setTxtMuteBtn("Unmute");
+        }
+    });
+
 }
 
 MainWindow::~MainWindow(){}
+
+void MainWindow::playMusic(){
+    bgMusicPlayer->play();
+
+    //Loop the background music
+    connect(bgMusicPlayer, &QMediaPlayer::mediaStatusChanged, [=](QMediaPlayer::MediaStatus status) {
+        if (status == QMediaPlayer::EndOfMedia) {
+            bgMusicPlayer->setPosition(0);
+            bgMusicPlayer->play();
+        }
+    });
+}
+
+void MainWindow::pauseMusic(){
+    bgMusicPlayer->pause();
+}
+
+void MainWindow::stopMusic(){
+    bgMusicPlayer->stop();
+}
+
+void MainWindow::playMusicFromTheStart(){
+    bgMusicPlayer->setPosition(0);
+    playMusic();
+}

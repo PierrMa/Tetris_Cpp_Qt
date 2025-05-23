@@ -10,8 +10,8 @@ public:
     explicit MenuWidget(QWidget *parent = nullptr);
 
 signals:
-    void playBtnClicked();
-    void goToGame();
+    void playBtnClicked(); //to start the timer
+    void goToGame(); //to do all necessary setup to go to the game page
     void goToSettings();
 };
 
