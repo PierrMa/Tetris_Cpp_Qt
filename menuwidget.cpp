@@ -1,6 +1,6 @@
 #include "menuwidget.h"
+#include "hoverbutton.h"
 
-#include <QPushButton>
 #include <QCoreApplication>
 #include <QBoxLayout>
 
@@ -8,13 +8,13 @@ MenuWidget::MenuWidget(QWidget *parent)
     : QWidget{parent}
 {
     //buttons
-    QPushButton* playBtn = new QPushButton("Play", this);
+    HoverButton* playBtn = new HoverButton("Play", this);
     playBtn->setFixedHeight(100);
     playBtn->setFixedWidth(300);
-    QPushButton* settingBtn = new QPushButton("Settings", this);
+    HoverButton* settingBtn = new HoverButton("Settings", this);
     settingBtn->setFixedHeight(100);
     settingBtn->setFixedWidth(300);
-    QPushButton* quitBtn = new QPushButton("Quit", this);
+    HoverButton* quitBtn = new HoverButton("Quit", this);
     quitBtn->setFixedHeight(100);
     quitBtn->setFixedWidth(300);
 

@@ -25,6 +25,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         gameboard.cpp gameboard.h menuwidget.cpp menuwidget.h ressources.qrc settings.cpp settings.h
+        hoverbutton.h hoverbutton.cpp
         )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET tetris APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
