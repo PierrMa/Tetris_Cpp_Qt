@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QBoxLayout>
+#include <QSoundEffect>
 
 GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
     : QWidget{parent}, m_mainwindow(mainwindow)
@@ -277,6 +278,12 @@ void GameBoard::deleteRow(){
                 grid[0][k] = QColor();
             }
             emit rowDeleted(); //signal to increment the score
+
+            //add crash sound effect
+            QSoundEffect* crashSound = new QSoundEffect(this);
+            crashSound->setSource(QUrl("qrc:/sound/crash.wav"));
+            crashSound->setVolume(1);
+            crashSound->play();
         }
     }
 }
@@ -342,6 +349,12 @@ void GameBoard::gameOverCheck(){
         dialog->setLayout(layout); //apply the main layout
         dialog->show(); //display the pop up
         connect(dialog,&QDialog::rejected,this,&GameBoard::tryAgain);
+
+        //play game over sound effect
+        QSoundEffect* gameOverSound = new QSoundEffect(this);
+        gameOverSound->setSource(QUrl("qrc:/sound/game_over_sound.wav"));
+        gameOverSound->setVolume(1);
+        gameOverSound->play();
     }else update();
 }
 

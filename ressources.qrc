@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>sound/background_music.mp3</file>
         <file>sound/hover_sound.wav</file>
+        <file>sound/crash.wav</file>
+        <file>sound/game_over_sound.wav</file>
     </qresource>
 </RCC>

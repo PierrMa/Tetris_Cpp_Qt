@@ -2,9 +2,9 @@
 #define HOVERBUTTON_H
 
 #include <QPushButton>
-#include <QSoundEffect>
 #include <QWidget>
 
+class QSoundEffect;
 class HoverButton : public QPushButton
 {
     Q_OBJECT
@@ -15,7 +15,7 @@ protected:
     void enterEvent(QEnterEvent *event) override;
 
 private:
-    QSoundEffect hoverSound;
+    QSoundEffect* hoverSound;
 };
 
 #endif // HOVERBUTTON_H
