@@ -57,6 +57,7 @@ public:
     void setRotateCmd(QKeySequence newRotateCmd){rotateKey = newRotateCmd;}
     void setDropCmd(QKeySequence newDropCmd){dropKey = newDropCmd;}
     void setBreakCmd(QKeySequence newBreakCmd){breakKey = newBreakCmd;}
+    void resume();
 
 private:
     static const int rows = 20;

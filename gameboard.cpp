@@ -340,7 +340,8 @@ void GameBoard::gameOverCheck(){
         addCenteredButton(quitBtn);
 
         dialog->setLayout(layout); //apply the main layout
-        dialog->exec(); //display the pop up
+        dialog->show(); //display the pop up
+        connect(dialog,&QDialog::rejected,this,&GameBoard::tryAgain);
     }else update();
 }
 
@@ -376,8 +377,7 @@ void GameBoard::pause(){
     resumeBtn->setFixedWidth(120);
     connect(resumeBtn, &QPushButton::clicked, [=](){
         pauseMenu->accept();
-        gameTimer->start(timerPeriod);
-        m_mainwindow->playMusic();
+        resume();
     });
     QPushButton *restartBtn = new QPushButton("Restart", pauseMenu);
     restartBtn->setFixedWidth(120);
@@ -403,9 +403,15 @@ void GameBoard::pause(){
     menuLayout->addWidget(menuBtn);
     menuLayout->addWidget(quitBtn);
     pauseMenu->setLayout(menuLayout);
-    pauseMenu->exec();
+    pauseMenu->show();
+    connect(pauseMenu,&QDialog::rejected,this,&GameBoard::resume);
 }
 
 void GameBoard::startTimer(){
     gameTimer->start(timerPeriod); //choose the period to move the tetromino (ms)
+}
+
+void GameBoard::resume(){
+    gameTimer->start(timerPeriod);
+    m_mainwindow->playMusic();
 }
