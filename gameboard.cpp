@@ -146,10 +146,10 @@ void GameBoard::moveDown(){
             int y = actuel->pos.y()+actuel->forme[i].y();
             grid[x][y] = actuel->color;
         }
+        deleteRow(); //check if there is a row to delete
         generateTetromino(); //next tetromino
     }else{
         actuel->pos.setX(newPosX); //move down the referent point of the tetromino of 1 block
-        deleteRow(); //check if there is a row to delete
         update(); //update the image
     }
 }
@@ -169,7 +169,6 @@ void GameBoard::moveRight(){
     }
     if(!collision){
         actuel->pos.setY(newY); //move right the referent point of the tetromino of 1 block
-        deleteRow(); //check if there is a row to delete
         update();//update the image
     }
 
@@ -190,33 +189,43 @@ void GameBoard::moveLeft(){
     }
     if(!collision){
         actuel->pos.setY(newY); //move left the referent point of the tetromino of 1 block
-        deleteRow(); //check if there is a row to delete
         update();//update the image
     }
 }
 
 void GameBoard::turn(){
-    bool collision = false;
-    //detect collision
+    bool isO = true;
     for(int i=0;i<4;i++){
-        int x = actuel->pos.x()+actuel->forme[i].y();
-        int y = actuel->pos.y()-(actuel->forme[i].x());
-        if((y<0)||(y>cols-1)||(x<0)||(x>rows-1)||grid[x][y].isValid())
-        {
-            collision = true;
+        if(forme::o[i]!=actuel->forme[i]){
+            isO = false;
             break;
         }
     }
-    if(!collision){
+    if(!isO){
+        bool collision = false;
+        //detect collision
         for(int i=0;i<4;i++){
-            int tempX = actuel->forme[i].x();
-            int tempY = actuel->forme[i].y();
-            actuel->forme[i].setX(tempY);
-            actuel->forme[i].setY(-tempX);
+            int x = actuel->pos.x()+actuel->forme[i].y();
+            int y = actuel->pos.y()-(actuel->forme[i].x());
+            if((y<0)||(y>cols-1)||(x<0)||(x>rows-1)||grid[x][y].isValid())
+            {
+                collision = true;
+                break;
+            }
         }
-        update();//update the image
+        if(!collision){
+            for(int i=0;i<4;i++){
+                int tempX = actuel->forme[i].x();
+                int tempY = actuel->forme[i].y();
+                actuel->forme[i].setX(tempY);
+                actuel->forme[i].setY(-tempX);
+            }
+            update();//update the image
+        }
     }
 }
+
+
 
 void GameBoard::drop(){
     bool collision = false;
@@ -225,7 +234,7 @@ void GameBoard::drop(){
         for(int i=0;i<4;i++){
             int x = tempRow + actuel->forme[i].x();
             int y = actuel->pos.y() + actuel->forme[i].y();
-            if(grid[x][y].isValid()||x>rows-1){
+            if(x>rows-1||grid[x][y].isValid()){
                 collision = true;
                 break;
             }

@@ -10,13 +10,13 @@ enum formeEnum{
 };
 
 typedef struct forme{
-    const QPoint l[4] = {{0,0},{1,0},{2,0},{3,0}};
-    const QPoint t[4] = {{0,0},{1,0},{1,1},{2,0}};
-    const QPoint z[4] = {{0,1},{1,0},{1,1},{2,0}};
-    const QPoint s[4] = {{0,0},{1,0},{1,1},{2,1}};
-    const QPoint L[4] = {{0,0},{1,0},{2,0},{2,1}};
-    const QPoint J[4] = {{0,1},{1,1},{2,0},{2,1}};
-    const QPoint o[4] = {{0,0},{1,0},{0,1},{1,1}};
+    static constexpr QPoint l[4] = {{0,0},{1,0},{2,0},{3,0}};
+    static constexpr QPoint t[4] = {{0,0},{1,0},{1,1},{2,0}};
+    static constexpr QPoint z[4] = {{0,1},{1,0},{1,1},{2,0}};
+    static constexpr QPoint s[4] = {{0,0},{1,0},{1,1},{2,1}};
+    static constexpr QPoint L[4] = {{0,0},{1,0},{2,0},{2,1}};
+    static constexpr QPoint J[4] = {{0,1},{1,1},{2,0},{2,1}};
+    static constexpr QPoint o[4] = {{0,0},{1,0},{0,1},{1,1}};
 }forme;
 
 typedef struct tetromino{
