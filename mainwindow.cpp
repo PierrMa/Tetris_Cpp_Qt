@@ -19,7 +19,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     bgMusicPlayer->setAudioOutput(bgAudioOutput);
     bgMusicPlayer->setSource(QUrl("qrc:/sound/background_music.mp3"));
     bgAudioOutput->setVolume(50); // volume from 0 to 100
-
+    bgAudioOutput->setMuted(false); //Unmute by default
 
 
     /********************
@@ -108,7 +108,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     });
 
     //to do when Cancel button (from Settings page) is clicked
-    connect(settings,&Settings::cancelClicked,[=](){
+    connect(settings,&Settings::backToMenu,[=](){
         //page to display if cancelClicked signal is emit
         stack->setCurrentWidget(menu);
         stack->show();
@@ -134,6 +134,10 @@ MainWindow::MainWindow(QMainWindow *parent)
         }
     });
 
+    /**********************
+     * Load configuration
+     *********************/
+    settings->loadSettings(board);
 }
 
 MainWindow::~MainWindow(){}

@@ -19,6 +19,7 @@ public:
     void setDropKeyField(QKeySequence val);
     void setBreakKeyField(QKeySequence val);
     void setTxtMuteBtn(QString);
+    void loadSettings(GameBoard* board);
 
 private:
     QKeySequenceEdit* leftKeyField;
@@ -30,7 +31,7 @@ private:
     QPushButton* muteBtn;
 
 signals:
-    void cancelClicked();
+    void backToMenu();
     void muteBtnCliked();
 };
 

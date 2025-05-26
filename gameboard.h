@@ -69,7 +69,7 @@ private:
     tetromino* actuel = nullptr;
     QColor grid[rows][cols];
     QTimer *gameTimer;
-    static const int timerPeriod = 500;
+    int timerPeriod = 500;
     QKeySequence leftKey = Qt::Key_Left;
     QKeySequence rightKey = Qt::Key_Right;
     QKeySequence downKey = Qt::Key_Down;

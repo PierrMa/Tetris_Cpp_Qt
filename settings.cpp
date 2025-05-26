@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QSizePolicy>
 #include <QKeySequenceEdit>
+#include <QSettings>
 
 Settings::Settings(QWidget *parent, GameBoard* board)
     : QWidget{parent}
@@ -98,13 +99,24 @@ Settings::Settings(QWidget *parent, GameBoard* board)
             &&val!=board->getDropCmd())
             board->setBreakCmd(val);
 
-        emit cancelClicked();
+        QSettings settings("PierrElec", "Tetris",this);
+
+        //Saving settings
+        settings.setValue("leftKey", leftKeyField->keySequence().toString());
+        settings.setValue("rightKey", rightKeyField->keySequence().toString());
+        settings.setValue("downKey", downKeyField->keySequence().toString());
+        settings.setValue("rotateKey", rotateKeyField->keySequence().toString());
+        settings.setValue("dropKey", dropKeyField->keySequence().toString());
+        settings.setValue("breakKey", breakKeyField->keySequence().toString());
+        settings.setValue("isMuted", (muteBtn->text() == "Unmute"));
+
+        emit backToMenu();
     });
     QPushButton* cancelBtn = new QPushButton("Cancel",this);
     cancelBtn->setFixedHeight(btnHeight);
     cancelBtn->setFixedWidth(btnWidth);
     connect(cancelBtn,&QPushButton::clicked,[=](){
-        emit cancelClicked();
+        emit backToMenu();
     });
 
     buttonLayout->addWidget(saveBtn);
@@ -148,4 +160,30 @@ void Settings::setBreakKeyField(QKeySequence val){
 
 void Settings::setTxtMuteBtn(QString val){
     muteBtn->setText(val);
+}
+
+void Settings::loadSettings(GameBoard* board) {
+    QSettings settings("PierrElec", "Tetris");
+
+    QKeySequence val;
+    val = QKeySequence(settings.value("leftKey", "Left").toString());
+    setLeftKeyField(val); board->setLeftCmd(val);
+
+    val = QKeySequence(settings.value("rightKey", "Right").toString());
+    setRightKeyField(val); board->setRightCmd(val);
+
+    val = QKeySequence(settings.value("downKey", "Down").toString());
+    setDownKeyField(val); board->setDownCmd(val);
+
+    val = QKeySequence(settings.value("rotateKey", "Up").toString());
+    setRotateKeyField(val); board->setRotateCmd(val);
+
+    val = QKeySequence(settings.value("dropKey", "Space").toString());
+    setDropKeyField(val); board->setDropCmd(val);
+
+    val = QKeySequence(settings.value("breakKey", "Escape").toString());
+    setBreakKeyField(val); board->setBreakCmd(val);
+
+    bool muted = settings.value("isMuted", false).toBool();
+    if(muted) emit muteBtnCliked(); //change configuration (Unmute to Mute) because default status is Unmute
 }

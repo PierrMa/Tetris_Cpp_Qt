@@ -36,6 +36,12 @@ GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
 
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
+
+    QTimer* speedTimer = new QTimer(this);
+    connect(speedTimer, &QTimer::timeout, [=](){
+        if(timerPeriod>100) timerPeriod -= 100;
+    });
+    speedTimer->start(180000);
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
