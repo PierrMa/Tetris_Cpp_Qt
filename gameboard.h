@@ -10,17 +10,18 @@ enum formeEnum{
 };
 
 typedef struct forme{
-    static constexpr QPoint l[4] = {{0,0},{1,0},{2,0},{3,0}};
-    static constexpr QPoint t[4] = {{0,0},{1,0},{1,1},{2,0}};
-    static constexpr QPoint z[4] = {{0,1},{1,0},{1,1},{2,0}};
-    static constexpr QPoint s[4] = {{0,0},{1,0},{1,1},{2,1}};
-    static constexpr QPoint L[4] = {{0,0},{1,0},{2,0},{2,1}};
-    static constexpr QPoint J[4] = {{0,1},{1,1},{2,0},{2,1}};
-    static constexpr QPoint o[4] = {{0,0},{1,0},{0,1},{1,1}};
+    //the fifth QPoint of each QPoint array is the center of rotation
+    static constexpr QPoint l[5] = {{0,0},{1,0},{2,0},{3,0},{1,0}};
+    static constexpr QPoint t[5] = {{0,0},{1,0},{1,1},{2,0},{1,0}};
+    static constexpr QPoint z[5] = {{0,1},{1,0},{1,1},{2,0},{1,1}};
+    static constexpr QPoint s[5] = {{0,0},{1,0},{1,1},{2,1},{1,0}};
+    static constexpr QPoint L[5] = {{0,0},{1,0},{2,0},{2,1},{1,0}};
+    static constexpr QPoint J[5] = {{0,1},{1,1},{2,0},{2,1},{1,1}};
+    static constexpr QPoint o[5] = {{0,0},{1,0},{0,1},{1,1},{0,0}};
 }forme;
 
 typedef struct tetromino{
-    QPoint forme[4];
+    QPoint forme[5];
     QColor color;
     QPoint pos;
 }tetromino;

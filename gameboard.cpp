@@ -39,27 +39,27 @@ GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
-    // --- Gradient (effet de profondeur intérieur) ---
+    // --- Gradient (inner depth effect) ---
     QLinearGradient gradient(x, y, x + size, y + size);
-    gradient.setColorAt(0, color.lighter(130));  // plus clair en haut à gauche
-    gradient.setColorAt(1, color.darker(130));   // plus foncé en bas à droite
+    gradient.setColorAt(0, color.lighter(130));  // brighter up left
+    gradient.setColorAt(1, color.darker(130));   // darker bottom right
 
     painter.setBrush(QBrush(gradient));
     painter.setPen(Qt::NoPen);
     painter.drawRect(x, y, size, size);
 
-    // Couleurs pour l'effet 3D
-    QColor light = color.lighter(150);  // Bord éclairé
-    QColor dark  = color.darker(150);   // Bord ombré
+    // Colors for 3D effect
+    QColor light = color.lighter(150); // illuminated edge
+    QColor dark  = color.darker(150); // shaded edge
 
-    // Dessiner les bords
+    // Draw edges
     painter.setPen(light);
-    painter.drawLine(x, y, x + size - 1, y);            // haut
-    painter.drawLine(x, y, x, y + size - 1);            // gauche
+    painter.drawLine(x, y, x + size - 1, y); // up
+    painter.drawLine(x, y, x, y + size - 1); // left
 
     painter.setPen(dark);
-    painter.drawLine(x + 1, y + size - 1, x + size - 1, y + size - 1); // bas
-    painter.drawLine(x + size - 1, y + 1, x + size - 1, y + size - 1); // droite
+    painter.drawLine(x + 1, y + size - 1, x + size - 1, y + size - 1); // bottom
+    painter.drawLine(x + size - 1, y + 1, x + size - 1, y + size - 1); // right
 }
 
 void GameBoard::paintEvent(QPaintEvent *) {
@@ -196,17 +196,26 @@ void GameBoard::moveLeft(){
 void GameBoard::turn(){
     bool isO = true;
     for(int i=0;i<4;i++){
-        if(forme::o[i]!=actuel->forme[i]){
+        if(actuel->forme[i]!=forme::o[i]){
             isO = false;
             break;
         }
     }
     if(!isO){
+        QPoint rotated[4]; //present tetromino with a -90° rotation
+        //Process the coordinates of each point of the tetromino
+        for(int i=0;i<4;i++){
+            int relX = actuel->forme[i].x() - actuel->forme[4].x();
+            int relY = actuel->forme[i].y() - actuel->forme[4].y();
+            rotated[i].setX(actuel->forme[4].x() + relY);
+            rotated[i].setY(actuel->forme[4].y() - relX);
+        }
+
         bool collision = false;
         //detect collision
         for(int i=0;i<4;i++){
-            int x = actuel->pos.x()+actuel->forme[i].y();
-            int y = actuel->pos.y()-(actuel->forme[i].x());
+            int x = actuel->pos.x()+rotated[i].x();
+            int y = actuel->pos.y()+rotated[i].y();
             if((y<0)||(y>cols-1)||(x<0)||(x>rows-1)||grid[x][y].isValid())
             {
                 collision = true;
@@ -214,18 +223,13 @@ void GameBoard::turn(){
             }
         }
         if(!collision){
-            for(int i=0;i<4;i++){
-                int tempX = actuel->forme[i].x();
-                int tempY = actuel->forme[i].y();
-                actuel->forme[i].setX(tempY);
-                actuel->forme[i].setY(-tempX);
+            for(int i=0;i<4;i++){ //apply rotation
+                actuel->forme[i]=rotated[i];
             }
             update();//update the image
         }
     }
 }
-
-
 
 void GameBoard::drop(){
     bool collision = false;
