@@ -59,6 +59,8 @@ public:
     void setDropCmd(QKeySequence newDropCmd){dropKey = newDropCmd;}
     void setBreakCmd(QKeySequence newBreakCmd){breakKey = newBreakCmd;}
     void resume();
+    void displayGameOverPopUp();
+    void displayWinnerPopUp();
 
 private:
     static const int rows = 20;
@@ -82,6 +84,7 @@ signals:
     void rowDeleted();
     void backToMenu();
     void resetScore();
+    void gameOver();
 
 public slots:
     void startTimer();

@@ -2,10 +2,12 @@
 #include "gameboard.h"
 #include "menuwidget.h"
 #include "settings.h"
+#include "scores.h"
 
 #include <QBoxLayout>
 #include <QLabel>
 #include <QDebug>
+#include <QSoundEffect>
 
 MainWindow::MainWindow(QMainWindow *parent)
     : QMainWindow(parent)
@@ -30,10 +32,12 @@ MainWindow::MainWindow(QMainWindow *parent)
     QWidget *gameContainer = new QWidget(stack);
     board = new GameBoard(gameContainer,this);
     menu = new MenuWidget(stack);
-    settings = new Settings(this,board);
+    settings = new Settings(stack,board);
+    score = new Scores(stack);
     stack->addWidget(gameContainer);
     stack->addWidget(menu);
     stack->addWidget(settings);
+    stack->addWidget(score);
     QHBoxLayout *gameContainerLayout = new QHBoxLayout(gameContainer); //main layout
     QVBoxLayout *scoreLayout = new QVBoxLayout(); //Layout for the score
 
@@ -132,6 +136,40 @@ MainWindow::MainWindow(QMainWindow *parent)
             bgAudioOutput->setMuted(true);
             settings->setTxtMuteBtn("Unmute");
         }
+    });
+
+    //to do if the game is over
+    connect(board,&GameBoard::gameOver, [=](){
+        /*int worstScore;
+        int rank=10;
+        do{ //looking for the wort registered score from rank 10 to rank 0
+            worstScore = score->getItem(rank-1,2); //2 is the column of the score
+            rank--;
+        }while((rank!=0)&&(worstScore=-1));
+
+        if((worstScore!=-1 && gameScore>worstScore) //if the table is not empty and the score is among the 10 best score
+            ||(rank==0 && worstScore==-1)){ //if the table is empty
+            //play congrat sound effect
+            QSoundEffect* winnerSound = new QSoundEffect(this);
+            winnerSound->setSource(QUrl("qrc:/sound/winner_sound.wav"));
+            winnerSound->setVolume(1);
+            winnerSound->play();
+
+            //ask to enter a pseudo
+            board->displayWinnerPopUp();
+
+            //save the new score with the pseudo and the name
+            qDebug()<<"pseudo: "<<m_pseudo;
+
+        }else{
+            //play game over sound
+            QSoundEffect* gameOverSound = new QSoundEffect(this);
+            gameOverSound->setSource(QUrl("qrc:/sound/game_over_sound.wav"));
+            gameOverSound->setVolume(1);
+            gameOverSound->play();
+        }
+        //display game over pop up*/
+        board->displayGameOverPopUp();
     });
 
     /**********************

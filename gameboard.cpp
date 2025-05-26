@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QBoxLayout>
 #include <QSoundEffect>
+#include <QLineEdit>
 
 GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
     : QWidget{parent}, m_mainwindow(mainwindow)
@@ -320,60 +321,9 @@ void GameBoard::gameOverCheck(){
     if(collision){
         gameTimer->stop();
         m_mainwindow->stopMusic();
-        QDialog *dialog = new QDialog(this);
-        dialog->setWindowTitle("Game Over");
-        dialog->setModal(true);  // bloque les autres interactions
 
-        QLabel *label = new QLabel("Game Over");
-        label->setAlignment(Qt::AlignCenter);
-        label->setStyleSheet("color: rgb(255,0,0); font-size: 26px; font-weight: bold");
-
-        QPushButton *tryAgainBtn = new QPushButton("Try Again");
-        QPushButton *menuBtn     = new QPushButton("Menu");
-        QPushButton *quitBtn     = new QPushButton("Quit");
-
-        // Connexions aux actions
-        connect(tryAgainBtn, &QPushButton::clicked, [=](){
-            dialog->accept(); //close the pop up
-            tryAgain(); //restart the game
-        });
-
-        connect(menuBtn, &QPushButton::clicked, [=]() {
-            dialog->accept();
-            clearBoard();
-            emit backToMenu();
-        });
-
-        connect(quitBtn, &QPushButton::clicked, [=]() {
-            qApp->quit();
-        });
-
-        //Add vertical layout
-        QVBoxLayout *layout = new QVBoxLayout(dialog);
-        layout->addWidget(label);
-
-        //Add horizontal Layout for each button and add it to the vertical layout
-        auto addCenteredButton = [&](QPushButton *button) {
-            button->setFixedWidth(120); // fixe width for each button
-            QHBoxLayout *hLayout = new QHBoxLayout;
-            hLayout->addStretch(); //left space
-            hLayout->addWidget(button);  //the button in the middle
-            hLayout->addStretch(); // right space
-            layout->addLayout(hLayout); //add the horizontal layout to the vertical layout
-        };
-        addCenteredButton(tryAgainBtn);
-        addCenteredButton(menuBtn);
-        addCenteredButton(quitBtn);
-
-        dialog->setLayout(layout); //apply the main layout
-        dialog->show(); //display the pop up
-        connect(dialog,&QDialog::rejected,this,&GameBoard::tryAgain);
-
-        //play game over sound effect
-        QSoundEffect* gameOverSound = new QSoundEffect(this);
-        gameOverSound->setSource(QUrl("qrc:/sound/game_over_sound.wav"));
-        gameOverSound->setVolume(1);
-        gameOverSound->play();
+        //manage game over task (check if the scor is among the 10 best scores and save it if so, ask pseudo, display the pop up)
+        emit gameOver();
     }else update();
 }
 
@@ -446,4 +396,69 @@ void GameBoard::startTimer(){
 void GameBoard::resume(){
     gameTimer->start(timerPeriod);
     m_mainwindow->playMusic();
+}
+
+void GameBoard::displayGameOverPopUp(){
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowTitle("Game Over");
+    dialog->setModal(true);  // bloque les autres interactions
+
+    QLabel *label = new QLabel("Game Over");
+    label->setAlignment(Qt::AlignCenter);
+    label->setStyleSheet("color: rgb(255,0,0); font-size: 26px; font-weight: bold");
+
+    QPushButton *tryAgainBtn = new QPushButton("Try Again");
+    QPushButton *menuBtn     = new QPushButton("Menu");
+    QPushButton *quitBtn     = new QPushButton("Quit");
+
+    // Connexions aux actions
+    connect(tryAgainBtn, &QPushButton::clicked, [=](){
+        dialog->accept(); //close the pop up
+        tryAgain(); //restart the game
+    });
+
+    connect(menuBtn, &QPushButton::clicked, [=]() {
+        dialog->accept();
+        clearBoard();
+        emit backToMenu();
+    });
+
+    connect(quitBtn, &QPushButton::clicked, [=]() {
+        qApp->quit();
+    });
+
+    //Add vertical layout
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+    layout->addWidget(label);
+
+    //Add horizontal Layout for each button and add it to the vertical layout
+    auto addCenteredButton = [&](QPushButton *button) {
+        button->setFixedWidth(120); // fixe width for each button
+        QHBoxLayout *hLayout = new QHBoxLayout;
+        hLayout->addStretch(); //left space
+        hLayout->addWidget(button);  //the button in the middle
+        hLayout->addStretch(); // right space
+        layout->addLayout(hLayout); //add the horizontal layout to the vertical layout
+    };
+    addCenteredButton(tryAgainBtn);
+    addCenteredButton(menuBtn);
+    addCenteredButton(quitBtn);
+
+    dialog->setLayout(layout); //apply the main layout
+    dialog->show(); //display the pop up
+    connect(dialog,&QDialog::rejected,this,&GameBoard::tryAgain);
+}
+
+void GameBoard::displayWinnerPopUp(){
+    QDialog* dialog = new QDialog(this);
+    QLabel* label = new QLabel("Enter you pseudo",this);
+    QLineEdit* pseudoLineEdit = new QLineEdit(this);
+    QPushButton* acceptBtn = new QPushButton("OK",this);
+    connect(acceptBtn,&QPushButton::clicked,[=](){
+        dialog->accept();
+    });
+
+    m_mainwindow->setPseudo(label->text());
+
+    dialog->show(); //display the pop up
 }

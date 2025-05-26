@@ -9,6 +9,7 @@
 class GameBoard;
 class MenuWidget;
 class Settings;
+class Scores;
 
 class MainWindow : public QMainWindow
 {
@@ -21,6 +22,7 @@ public:
     void playMusicFromTheStart();
     void pauseMusic();
     void stopMusic();
+    void setPseudo(QString pseudo){ m_pseudo = pseudo;}
 private:
     QStackedWidget* stack;
     GameBoard* board;
@@ -29,5 +31,7 @@ private:
     int gameScore = 0;
     QMediaPlayer* bgMusicPlayer;
     QAudioOutput* bgAudioOutput;
+    Scores* score;
+    QString m_pseudo;
 };
 #endif // MAINWINDOW_H
