@@ -17,6 +17,9 @@ MenuWidget::MenuWidget(QWidget *parent)
     HoverButton* quitBtn = new HoverButton("Quit", this);
     quitBtn->setFixedHeight(100);
     quitBtn->setFixedWidth(300);
+    HoverButton* scoreBtn = new HoverButton("Scores", this);
+    scoreBtn->setFixedHeight(100);
+    scoreBtn->setFixedWidth(300);
 
     //connexions
     connect(playBtn, &QPushButton::clicked, [=](){
@@ -29,12 +32,16 @@ MenuWidget::MenuWidget(QWidget *parent)
     connect(quitBtn, &QPushButton::clicked, [=](){
         qApp->quit();
     });
+    connect(scoreBtn, &QPushButton::clicked, [=](){
+        emit goToScores();
+    });
 
     //Layout
     QVBoxLayout* btnLayout = new QVBoxLayout(this);
     btnLayout->setAlignment(Qt::AlignCenter);
     btnLayout->addWidget(playBtn);
     btnLayout->addWidget(settingBtn);
+    btnLayout->addWidget(scoreBtn);
     btnLayout->addWidget(quitBtn);
 
     //style

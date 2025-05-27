@@ -4,5 +4,6 @@
         <file>sound/hover_sound.wav</file>
         <file>sound/crash.wav</file>
         <file>sound/game_over_sound.wav</file>
+        <file>sound/winner_sound.wav</file>
     </qresource>
 </RCC>

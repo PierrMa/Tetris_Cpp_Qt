@@ -451,14 +451,23 @@ void GameBoard::displayGameOverPopUp(){
 
 void GameBoard::displayWinnerPopUp(){
     QDialog* dialog = new QDialog(this);
-    QLabel* label = new QLabel("Enter you pseudo",this);
+    dialog->setWindowTitle("Congratulations");
+    QLabel* label = new QLabel("Congratulations, you are in the top 10!\nEnter your pseudo:",this);
+    label->setAlignment(Qt::AlignCenter);
     QLineEdit* pseudoLineEdit = new QLineEdit(this);
     QPushButton* acceptBtn = new QPushButton("OK",this);
-    connect(acceptBtn,&QPushButton::clicked,[=](){
-        dialog->accept();
-    });
+    acceptBtn->setFixedWidth(100);
+    connect(acceptBtn,&QPushButton::clicked,dialog,&QDialog::accept);
+    QVBoxLayout* layout = new QVBoxLayout(dialog);
+    layout->addWidget(label);
+    layout->addWidget(pseudoLineEdit);
+    QHBoxLayout* btnLayout = new QHBoxLayout;
+    btnLayout->addStretch();
+    btnLayout->addWidget(acceptBtn);
+    btnLayout->addStretch();
+    layout->addLayout(btnLayout);
 
-    m_mainwindow->setPseudo(label->text());
+    dialog->exec(); //display the pop up
 
-    dialog->show(); //display the pop up
+    m_mainwindow->setPseudo(pseudoLineEdit->text());//change the pseudo in mainwindow
 }

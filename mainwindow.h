@@ -33,5 +33,7 @@ private:
     QAudioOutput* bgAudioOutput;
     Scores* score;
     QString m_pseudo;
+public slots:
+    void displayMenu();
 };
 #endif // MAINWINDOW_H

@@ -13,6 +13,7 @@ signals:
     void playBtnClicked(); //to start the timer
     void goToGame(); //to do all necessary setup to go to the game page
     void goToSettings();
+    void goToScores();
 };
 
 #endif // MENUWIDGET_H

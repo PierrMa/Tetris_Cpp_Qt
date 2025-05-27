@@ -82,11 +82,10 @@ MainWindow::MainWindow(QMainWindow *parent)
      *    Connexions    *
      ********************/
     //to do when Menu button is clicked
-    connect(board,&GameBoard::backToMenu,[=](){
-        //page to display if backToMenu signal is emit
-        stack->setCurrentWidget(menu);
-        stack->show();
-    });
+    connect(board,&GameBoard::backToMenu,this,&MainWindow::displayMenu);
+    connect(score,&Scores::backToMenu,this,&MainWindow::displayMenu);
+    //to do when Cancel button (from Settings page) is clicked
+    connect(settings,&Settings::backToMenu,this, &MainWindow::displayMenu);
 
     //to do when Play button is clicked
     connect(menu,&MenuWidget::goToGame,[=](){
@@ -108,13 +107,6 @@ MainWindow::MainWindow(QMainWindow *parent)
 
         //page to display if goToSettings signal is emit
         stack->setCurrentWidget(settings);
-        stack->show();
-    });
-
-    //to do when Cancel button (from Settings page) is clicked
-    connect(settings,&Settings::backToMenu,[=](){
-        //page to display if cancelClicked signal is emit
-        stack->setCurrentWidget(menu);
         stack->show();
     });
 
@@ -140,16 +132,16 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     //to do if the game is over
     connect(board,&GameBoard::gameOver, [=](){
-        /*int worstScore;
+        int worstScore;
         int rank=10;
         do{ //looking for the wort registered score from rank 10 to rank 0
             worstScore = score->getItem(rank-1,2); //2 is the column of the score
             rank--;
-        }while((rank!=0)&&(worstScore=-1));
+        }while((rank!=0)&&(worstScore==-1));
 
         if((worstScore!=-1 && gameScore>worstScore) //if the table is not empty and the score is among the 10 best score
             ||(rank==0 && worstScore==-1)){ //if the table is empty
-            //play congrat sound effect
+            //play congrats sound effect
             QSoundEffect* winnerSound = new QSoundEffect(this);
             winnerSound->setSource(QUrl("qrc:/sound/winner_sound.wav"));
             winnerSound->setVolume(1);
@@ -159,7 +151,7 @@ MainWindow::MainWindow(QMainWindow *parent)
             board->displayWinnerPopUp();
 
             //save the new score with the pseudo and the name
-            qDebug()<<"pseudo: "<<m_pseudo;
+            score->insertNewScore(m_pseudo,gameScore);
 
         }else{
             //play game over sound
@@ -168,8 +160,14 @@ MainWindow::MainWindow(QMainWindow *parent)
             gameOverSound->setVolume(1);
             gameOverSound->play();
         }
-        //display game over pop up*/
+        //display game over pop up
         board->displayGameOverPopUp();
+    });
+
+    //to do when Scores button is clicked
+    connect(menu,&MenuWidget::goToScores,[=](){
+        stack->setCurrentWidget(score);
+        stack->show();
     });
 
     /**********************
@@ -203,4 +201,9 @@ void MainWindow::stopMusic(){
 void MainWindow::playMusicFromTheStart(){
     bgMusicPlayer->setPosition(0);
     playMusic();
+}
+
+void MainWindow::displayMenu(){
+    stack->setCurrentWidget(menu);
+    stack->show();
 }
