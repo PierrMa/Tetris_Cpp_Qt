@@ -16,14 +16,17 @@ Scores::Scores(QWidget *parent)
     QVBoxLayout* scoreLayout = new QVBoxLayout(this);
     scoreTable = new QTableWidget(10,4,this);
     scoreTable->setHorizontalHeaderLabels(QStringList()<<"Rank"<<"Pseudo"<<"Score"<<"Date");
-    //scoreTable->setVerticalHeaderLabels(QStringList()<<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7"<<"8"<<"9"<<"10");
-    //scoreTable->horizontalHeader()->hide();
     scoreTable->verticalHeader()->hide();
+    scoreTable->setFixedHeight(327);
+    scoreTable->setColumnWidth(0, 80);
     scoreLayout->addWidget(scoreTable);
+    scoreLayout->setAlignment(Qt::AlignCenter);
 
     //rank column
     for(int i=0;i<10;i++){
-        scoreTable->setItem(i,0, new QTableWidgetItem(QString::number(i+1)));
+        QTableWidgetItem* item = new QTableWidgetItem(QString::number(i+1));
+        scoreTable->setItem(i,0, item);
+        item->setTextAlignment(Qt::AlignCenter);
     }
     //initiate an empty table
     for(int i=0;i<10;i++){
@@ -93,6 +96,7 @@ void Scores::loadScoresFromFile() {
         QTableWidgetItem* pseudoItem = new QTableWidgetItem(pseudo);
         QTableWidgetItem* scoreItem = new QTableWidgetItem(QString::number(score));
         QTableWidgetItem* dateItem = new QTableWidgetItem(date);
+        pseudoItem->setTextAlignment(Qt::AlignCenter);
         scoreItem->setTextAlignment(Qt::AlignCenter);
         dateItem->setTextAlignment(Qt::AlignCenter);
 
@@ -164,6 +168,7 @@ void Scores::insertNewScore(const QString& pseudo, int score) {
         QTableWidgetItem* dateItem = new QTableWidgetItem(obj["Date"].toString());
         QTableWidgetItem* pseudoItem = new QTableWidgetItem(obj["Pseudo"].toString());
         QTableWidgetItem* scoreItem = new QTableWidgetItem(QString::number(obj["Score"].toInt()));
+        pseudoItem->setTextAlignment(Qt::AlignCenter);
         scoreItem->setTextAlignment(Qt::AlignCenter);
         dateItem->setTextAlignment(Qt::AlignCenter);
 
