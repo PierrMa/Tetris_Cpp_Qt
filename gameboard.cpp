@@ -1,5 +1,4 @@
 #include "gameboard.h"
-#include "mainwindow.h"
 
 #include <QPainter>
 #include <QRandomGenerator>
@@ -12,6 +11,11 @@
 #include <QBoxLayout>
 #include <QSoundEffect>
 #include <QLineEdit>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFileDialog>
 
 GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
     : QWidget{parent}, m_mainwindow(mainwindow)
@@ -373,6 +377,9 @@ void GameBoard::pause(){
         pauseMenu->accept();
         emit backToMenu();
     });
+    QPushButton *saveBtn = new QPushButton("Save", pauseMenu);
+    saveBtn->setFixedWidth(120);
+    connect(saveBtn, &QPushButton::clicked, this, &GameBoard::saveSession);
     QPushButton *quitBtn = new QPushButton("Quit", pauseMenu);
     quitBtn->setFixedWidth(120);
     connect(quitBtn, &QPushButton::clicked, [=]() {
@@ -383,6 +390,7 @@ void GameBoard::pause(){
     menuLayout->addWidget(resumeBtn);
     menuLayout->addWidget(restartBtn);
     menuLayout->addWidget(menuBtn);
+    menuLayout->addWidget(saveBtn);
     menuLayout->addWidget(quitBtn);
     pauseMenu->setLayout(menuLayout);
     pauseMenu->show();
@@ -470,4 +478,119 @@ void GameBoard::displayWinnerPopUp(){
     dialog->exec(); //display the pop up
 
     m_mainwindow->setPseudo(pseudoLineEdit->text());//change the pseudo in mainwindow
+}
+
+void GameBoard::saveSession(){
+    //save the state of the grid
+    QJsonArray array;
+    for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+            QColor caseColor = grid[i][j];
+            QPoint caseCoordinates = QPoint(i,j);
+            QJsonObject obj;
+            obj["r"] = caseColor.red();
+            obj["g"] = caseColor.green();
+            obj["b"] = caseColor.blue();
+            obj["row"] = caseCoordinates.x();
+            obj["col"] = caseCoordinates.y();
+            array.append(obj);
+        }
+    }
+
+    //save the current tetromino and its position
+    QJsonObject tetrominoObj;
+    for(int i=0;i<5;i++){
+        QString pointAxis = "p"+QString::number(i)+"x";
+        QString pointOrdinate ="p"+QString::number(i)+"y";
+        tetrominoObj[pointAxis] = actuel->forme[i].x();
+        tetrominoObj[pointOrdinate] = actuel->forme[i].y();
+    }
+    tetrominoObj["r"] = actuel->color.red();
+    tetrominoObj["g"] = actuel->color.green();
+    tetrominoObj["b"] = actuel->color.blue();
+    tetrominoObj["posX"] = actuel->pos.x();
+    tetrominoObj["posY"] = actuel->pos.y();
+    array.append(tetrominoObj);
+
+    //save the score
+    QJsonObject scoreObj;
+    scoreObj["score"] = m_mainwindow->getScore();
+    array.append(scoreObj);
+
+    //save timer period
+    QJsonObject periodObj;
+    periodObj["period"] = timerPeriod;
+    array.append(periodObj);
+
+    //save data into json
+    QJsonDocument doc(array);
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Save JSON File",
+        "",
+        "JSON Files (*.json);;All Files (*)"
+        );
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(doc.toJson());
+        file.close();
+    }
+}
+
+bool GameBoard::loadSession(){
+    //select the backup to open
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        "Open JSON File",
+        "",
+        "JSON Files (*.json);;All Files (*)"
+        );
+
+    if (fileName.isEmpty()) {
+        // Clicked on cancel
+        return false;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, "Error", "Could not open file for reading.");
+        return false;
+    }
+
+    QByteArray data = file.readAll();
+    file.close();
+    if (data.trimmed().isEmpty())return false;
+
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+    if (parseError.error != QJsonParseError::NoError || !doc.isArray()) {
+        qWarning() << "Invalid JSON format in scores.json:" << parseError.errorString();
+        return false;
+    }
+
+    QJsonArray array = doc.array();
+    int nbCase = rows*cols;
+    for(int i=0;i<nbCase;i++){
+        QJsonObject obj = array[i].toObject();
+        grid[obj["row"].toInt()][obj["col"].toInt()]=QColor(obj["r"].toInt(),obj["g"].toInt(),obj["b"].toInt());
+    }
+
+    QJsonObject obj = array[nbCase].toObject();
+    for(int i=0;i<5;i++){
+        actuel->forme[i] = QPoint(obj["p"+QString::number(i)+"x"].toInt(),obj["p"+QString::number(i)+"y"].toInt());
+    }
+    actuel->color = QColor(obj["r"].toInt(),obj["g"].toInt(),obj["b"].toInt());
+    actuel->pos = QPoint(obj["posX"].toInt(),obj["posY"].toInt());
+
+    obj = array[nbCase+1].toObject();
+    m_mainwindow->setScore(obj["score"].toInt());
+
+    obj = array[nbCase+2].toObject();
+    timerPeriod = obj["period"].toInt();
+
+    return true;
 }

@@ -61,6 +61,8 @@ public:
     void resume();
     void displayGameOverPopUp();
     void displayWinnerPopUp();
+    void saveSession();
+    bool loadSession();
 
 private:
     static const int rows = 20;

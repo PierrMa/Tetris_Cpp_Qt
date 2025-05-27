@@ -23,6 +23,8 @@ public:
     void pauseMusic();
     void stopMusic();
     void setPseudo(QString pseudo){ m_pseudo = pseudo;}
+    int getScore()const{return gameScore;}
+    void setScore(int val){gameScore = val;}
 private:
     QStackedWidget* stack;
     GameBoard* board;

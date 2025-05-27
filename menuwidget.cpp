@@ -20,6 +20,9 @@ MenuWidget::MenuWidget(QWidget *parent)
     HoverButton* scoreBtn = new HoverButton("Scores", this);
     scoreBtn->setFixedHeight(100);
     scoreBtn->setFixedWidth(300);
+    HoverButton* recordBtn = new HoverButton("Records", this);
+    recordBtn->setFixedHeight(100);
+    recordBtn->setFixedWidth(300);
 
     //connexions
     connect(playBtn, &QPushButton::clicked, [=](){
@@ -35,6 +38,9 @@ MenuWidget::MenuWidget(QWidget *parent)
     connect(scoreBtn, &QPushButton::clicked, [=](){
         emit goToScores();
     });
+    connect(recordBtn, &QPushButton::clicked, [=](){
+        emit loadBackUp();
+    });
 
     //Layout
     QVBoxLayout* btnLayout = new QVBoxLayout(this);
@@ -42,6 +48,7 @@ MenuWidget::MenuWidget(QWidget *parent)
     btnLayout->addWidget(playBtn);
     btnLayout->addWidget(settingBtn);
     btnLayout->addWidget(scoreBtn);
+    btnLayout->addWidget(recordBtn);
     btnLayout->addWidget(quitBtn);
 
     //style

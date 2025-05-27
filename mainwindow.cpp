@@ -170,6 +170,19 @@ MainWindow::MainWindow(QMainWindow *parent)
         stack->show();
     });
 
+    //to do when Record button is clicked
+    connect(menu,&MenuWidget::loadBackUp,[=](){
+        bool isLoaded = board->loadSession();
+        if(isLoaded){
+            playMusic();
+            //display game page
+            stack->setCurrentWidget(gameContainer);
+            stack->show();
+            //launch timer
+            board->startTimer();
+        }
+    });
+
     /**********************
      * Load configuration
      *********************/

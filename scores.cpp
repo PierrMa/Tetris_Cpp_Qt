@@ -63,25 +63,25 @@ int Scores::getItem(int row, int col){
 void Scores::loadScoresFromFile() {
     QFile file("scores.json");
     if (!file.exists()) {
-        qDebug() << "scores.json not found. Starting with an empty score table.";
+        //qDebug() << "scores.json not found. Starting with an empty score table.";
         return;
     }
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "Failed to open scores.json for reading.";
+        //qWarning() << "Failed to open scores.json for reading.";
         return;
     }
 
     QByteArray data = file.readAll();
     file.close();
     if (data.trimmed().isEmpty()) {
-        qDebug() << "scores.json is empty.";
+        //qDebug() << "scores.json is empty.";
         return;
     }
 
     QJsonParseError parseError;
     QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
     if (parseError.error != QJsonParseError::NoError || !doc.isArray()) {
-        qWarning() << "Invalid JSON format in scores.json:" << parseError.errorString();
+        //qWarning() << "Invalid JSON format in scores.json:" << parseError.errorString();
         return;
     }
 

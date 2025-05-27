@@ -14,6 +14,7 @@ signals:
     void goToGame(); //to do all necessary setup to go to the game page
     void goToSettings();
     void goToScores();
+    void loadBackUp();
 };
 
 #endif // MENUWIDGET_H
