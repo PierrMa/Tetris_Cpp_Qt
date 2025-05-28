@@ -13,11 +13,16 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Multimedia)
 
+# Add icon for Windows
+if(WIN32)
+    set(WINDOWS_ICON"${CMAKE_CURRENT_SOURCE_DIR}/tetris.rc")
+endif()
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
-        mainwindow.ui
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -27,6 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         gameboard.cpp gameboard.h menuwidget.cpp menuwidget.h ressources.qrc settings.cpp settings.h
         hoverbutton.h hoverbutton.cpp
         scores.h scores.cpp
+        ${WINDOWS_ICON}
         )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET tetris APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

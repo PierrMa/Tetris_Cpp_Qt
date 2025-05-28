@@ -271,17 +271,17 @@ void GameBoard::drop(){
 }
 
 void GameBoard::keyPressEvent(QKeyEvent *event){
-    if(event->key() == rightKey[0]){
+    if(QKeySequence(event->key()) == rightKey){
         moveRight();
-    }else if(event->key() == leftKey[0]){
+    }else if(QKeySequence(event->key()) == leftKey){
         moveLeft();
-    }else if(event->key() == downKey[0]){
+    }else if(QKeySequence(event->key()) == downKey){
         moveDown();
-    }else if(event->key() == rotateKey[0]){
+    }else if(QKeySequence(event->key()) == rotateKey){
         turn();
-    }else if(event->key() == dropKey[0]){
+    }else if(QKeySequence(event->key()) == dropKey){
         drop();
-    }else if(event->key() == breakKey[0]){
+    }else if(QKeySequence(event->key()) == breakKey){
         pause();
     }
 }

@@ -134,7 +134,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     connect(board,&GameBoard::gameOver, [=](){
         int worstScore;
         int rank=10;
-        do{ //looking for the wort registered score from rank 10 to rank 0
+        do{ //looking for the worst registered score from rank 10 to rank 0
             worstScore = score->getItem(rank-1,2); //2 is the column of the score
             rank--;
         }while((rank!=0)&&(worstScore==-1));
