@@ -35,7 +35,7 @@ GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
         }
     }
 
-    //move down the tetromino throuh the time
+    //move down the tetromino through the time
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::moveDown);
 
@@ -44,7 +44,10 @@ GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
 
     QTimer* speedTimer = new QTimer(this);
     connect(speedTimer, &QTimer::timeout, [=](){
-        if(timerPeriod>100) timerPeriod -= 100;
+        if(timerPeriod>100){
+            timerPeriod -= 100;
+            gameTimer->start(timerPeriod);
+        }
     });
     speedTimer->start(180000);
 }
@@ -347,6 +350,7 @@ void GameBoard::tryAgain(){
 
     generateTetromino(); //generate a new tetromino
 
+    timerPeriod = 1000; //re-initialize timer
     gameTimer->start(timerPeriod); //restart timer
 
     m_mainwindow->playMusicFromTheStart();
@@ -487,10 +491,15 @@ void GameBoard::saveSession(){
         for(int j=0;j<cols;j++){
             QColor caseColor = grid[i][j];
             QPoint caseCoordinates = QPoint(i,j);
+            bool isValid = grid[i][j].isValid();
             QJsonObject obj;
-            obj["r"] = caseColor.red();
-            obj["g"] = caseColor.green();
-            obj["b"] = caseColor.blue();
+            obj["valid"] = isValid;
+            qDebug()<<"grid["<<i<<"]["<<j<<"] valid?: "<<isValid;
+            if(isValid){
+                obj["r"] = caseColor.red();
+                obj["g"] = caseColor.green();
+                obj["b"] = caseColor.blue();
+            }
             obj["row"] = caseCoordinates.x();
             obj["col"] = caseCoordinates.y();
             array.append(obj);
@@ -545,7 +554,7 @@ bool GameBoard::loadSession(){
     //select the backup to open
     QString fileName = QFileDialog::getOpenFileName(
         this,
-        "Open JSON File",
+        "Choose your back up",
         "",
         "JSON Files (*.json);;All Files (*)"
         );
@@ -576,7 +585,10 @@ bool GameBoard::loadSession(){
     int nbCase = rows*cols;
     for(int i=0;i<nbCase;i++){
         QJsonObject obj = array[i].toObject();
-        grid[obj["row"].toInt()][obj["col"].toInt()]=QColor(obj["r"].toInt(),obj["g"].toInt(),obj["b"].toInt());
+        if(obj["valid"]==true)
+            grid[obj["row"].toInt()][obj["col"].toInt()]=QColor(obj["r"].toInt(),obj["g"].toInt(),obj["b"].toInt());
+        else
+            grid[obj["row"].toInt()][obj["col"].toInt()]=QColor();
     }
 
     QJsonObject obj = array[nbCase].toObject();
@@ -591,6 +603,5 @@ bool GameBoard::loadSession(){
 
     obj = array[nbCase+2].toObject();
     timerPeriod = obj["period"].toInt();
-
     return true;
 }
