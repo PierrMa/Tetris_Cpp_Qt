@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Tetris</Name>
+    <Version>1.0.0</Version>
+    <Title>Tetris Installer</Title>
+    <Publisher>PierrElec</Publisher>
+    <StartMenuDir>Tetris</StartMenuDir>
+    <TargetDir>@RootDir@/Tetris</TargetDir>
+	<InstallerApplicationIcon>tetris</InstallerApplicationIcon>
+	<Logo>tetris.png</Logo>
+</Installer>
