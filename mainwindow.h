@@ -5,6 +5,7 @@
 #include <QStackedWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QLabel>
 
 class GameBoard;
 class MenuWidget;
@@ -24,7 +25,7 @@ public:
     void stopMusic();
     void setPseudo(QString pseudo){ m_pseudo = pseudo;}
     int getScore()const{return gameScore;}
-    void setScore(int val){gameScore = val;}
+    void setScore(int val);
 private:
     QStackedWidget* stack;
     GameBoard* board;
@@ -35,6 +36,7 @@ private:
     QAudioOutput* bgAudioOutput;
     Scores* score;
     QString m_pseudo;
+    QLabel* scoreValueLabel;
 public slots:
     void displayMenu();
 };

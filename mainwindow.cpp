@@ -5,7 +5,6 @@
 #include "scores.h"
 
 #include <QBoxLayout>
-#include <QLabel>
 #include <QDebug>
 #include <QSoundEffect>
 
@@ -46,7 +45,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     QLabel *scoreTxtLabel = new QLabel("Score", scoreWidget);
     scoreTxtLabel->setFixedHeight(30);
     scoreTxtLabel->setStyleSheet("font-weight: bold; font-size: 26px;");
-    QLabel *scoreValueLabel = new QLabel("0", scoreWidget);
+    scoreValueLabel = new QLabel("0", scoreWidget);
     scoreValueLabel->setFixedHeight(30);
     scoreValueLabel->setStyleSheet("font-weight: bold; font-size: 26px;");
     scoreValueLabel->setAlignment(Qt::AlignCenter);
@@ -69,8 +68,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     //increment the score each time a row is completed
     connect(board, &GameBoard::rowDeleted, [=](){
-        gameScore += 10;
-        scoreValueLabel->setText(QString::number(gameScore));
+        setScore(gameScore+10);
     });
 
     //choose the current page to display
@@ -115,8 +113,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     //to do when resetScore signal is emitted (after a clik on Restart or Try Again or Menu)
     connect(board, &GameBoard::resetScore,[=](){
-        gameScore = 0;
-        scoreValueLabel->setText(QString::number(gameScore));
+        setScore(0);
     });
 
     //to do when Mute button is clicked
@@ -219,4 +216,9 @@ void MainWindow::playMusicFromTheStart(){
 void MainWindow::displayMenu(){
     stack->setCurrentWidget(menu);
     stack->show();
+}
+
+void MainWindow::setScore(int val){
+    gameScore = val;
+    scoreValueLabel->setText(QString::number(gameScore));
 }

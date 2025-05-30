@@ -494,7 +494,6 @@ void GameBoard::saveSession(){
             bool isValid = grid[i][j].isValid();
             QJsonObject obj;
             obj["valid"] = isValid;
-            qDebug()<<"grid["<<i<<"]["<<j<<"] valid?: "<<isValid;
             if(isValid){
                 obj["r"] = caseColor.red();
                 obj["g"] = caseColor.green();
