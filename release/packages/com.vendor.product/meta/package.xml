@@ -4,6 +4,9 @@
     <Description>Install Tetris.</Description>
     <Version>0.1.0-1</Version>
     <ReleaseDate>2025-05-28</ReleaseDate>
+	<Licenses>
+        <License name="Licence GPL3" file="licence_GPL3.txt" />
+    </Licenses>
     <Default>script</Default>
 	<Script>installscript.qs</Script>
 </Package>

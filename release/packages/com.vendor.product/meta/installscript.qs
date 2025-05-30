@@ -12,7 +12,7 @@ Component.prototype.createOperations = function() {
     component.addOperation("CreateShortcut",
         targetPath, shortcutPath,
         "workingDirectory=" + workingDirectory,
-		"iconPath = @TargetDir@/tetris.ico"
+		"iconPath=C:/Users/fpier/Documents/QtCreator/tetris/tetris.ico"
     );
 
 }
