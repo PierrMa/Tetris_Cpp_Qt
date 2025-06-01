@@ -42,14 +42,14 @@ GameBoard::GameBoard(QWidget *parent, MainWindow* mainwindow)
     //take keyboard press into account
     setFocusPolicy(Qt::StrongFocus);
 
-    QTimer* speedTimer = new QTimer(this);
+    speedTimer = new QTimer(this);
     connect(speedTimer, &QTimer::timeout, [=](){
         if(timerPeriod>100){
             timerPeriod -= 100;
             gameTimer->start(timerPeriod);
         }
     });
-    speedTimer->start(180000);
+    speedTimer->start(speedPeriod);
 }
 
 void GameBoard::drawBlock(QPainter &painter, int x, int y, int size, QColor color) {
@@ -327,6 +327,7 @@ void GameBoard::gameOverCheck(){
     }
     if(collision){
         gameTimer->stop();
+        speedTimer->stop();
         m_mainwindow->stopMusic();
 
         //manage game over task (check if the scor is among the 10 best scores and save it if so, ask pseudo, display the pop up)
@@ -352,12 +353,14 @@ void GameBoard::tryAgain(){
 
     timerPeriod = 1000; //re-initialize timer
     gameTimer->start(timerPeriod); //restart timer
+    speedTimer->start(speedPeriod);
 
     m_mainwindow->playMusicFromTheStart();
 }
 
 void GameBoard::pause(){
     gameTimer->stop();
+    speedTimer->stop();
     m_mainwindow->pauseMusic();
     QDialog *pauseMenu = new QDialog(this);
     pauseMenu->setWindowTitle("Pause");
@@ -403,17 +406,19 @@ void GameBoard::pause(){
 
 void GameBoard::startTimer(){
     gameTimer->start(timerPeriod); //choose the period to move the tetromino (ms)
+    speedTimer->start(speedPeriod);
 }
 
 void GameBoard::resume(){
     gameTimer->start(timerPeriod);
+    speedTimer->start(speedPeriod);
     m_mainwindow->playMusic();
 }
 
 void GameBoard::displayGameOverPopUp(){
     QDialog *dialog = new QDialog(this);
     dialog->setWindowTitle("Game Over");
-    dialog->setModal(true);  // bloque les autres interactions
+    dialog->setModal(true);  // blocking other interactions
 
     QLabel *label = new QLabel("Game Over");
     label->setAlignment(Qt::AlignCenter);

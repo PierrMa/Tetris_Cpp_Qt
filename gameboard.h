@@ -72,8 +72,10 @@ private:
     static const int offSetY = 10;
     tetromino* actuel = nullptr;
     QColor grid[rows][cols];
-    QTimer *gameTimer;
-    int timerPeriod = 1000;
+    QTimer *gameTimer; //timer to move the block
+    QTimer *speedTimer; //timer to manage blocks falling speed
+    int timerPeriod = 1000; //period to move down the block. It decreases every speedPeriod.
+    int speedPeriod = 180000; //period to accelerate block falling
     QKeySequence leftKey = Qt::Key_Left;
     QKeySequence rightKey = Qt::Key_Right;
     QKeySequence downKey = Qt::Key_Down;
